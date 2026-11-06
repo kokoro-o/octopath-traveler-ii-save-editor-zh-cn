@@ -2,7 +2,7 @@ name: Deploy static editor to GitHub Pages
 
 on:
   push:
-    branches: [standalone]
+    branches: [main]
   workflow_dispatch:
 
 permissions:

@@ -43,7 +43,7 @@ npm run audit:publication
 
 [部署步骤](docs/github-pages.md) · [迁移说明](docs/standalone-migration.md) · [中文使用说明](中文版使用说明.md)
 
-新项目使用 `standalone` 分支、独立开发历史。原 Fork 及旧站继续保留；当前私人仓库是否公开、何时启用 Pages，单独确认后操作。README 中不把尚未部署的目标网址标成已上线。
+新项目使用 `main` 分支、独立开发历史。原 Fork 及旧站继续保留；当前私人仓库是否公开、何时启用 Pages，单独确认后操作。README 中不把尚未部署的目标网址标成已上线。
 
 ## 项目来源与版权
 
