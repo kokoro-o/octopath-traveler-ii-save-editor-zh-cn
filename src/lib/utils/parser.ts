@@ -1,0 +1,755 @@
+import { get } from "svelte/store";
+
+import {
+  dataViewAlt,
+  fileHeaderShift,
+  gameJson,
+  gameTemplate,
+  gameUtils,
+  isDebug,
+} from "$lib/stores";
+import { getInt } from "$lib/utils/bytes";
+import {
+  clone,
+  generateUUID,
+  getObjKey,
+  getRegionArray,
+  getUtils,
+  utilsExists,
+} from "$lib/utils/format";
+
+import type {
+  Item,
+  ItemBitflag,
+  ItemBitflags,
+  ItemChecksum,
+  ItemComponent,
+  ItemContainer,
+  ItemIntCondition,
+  ItemTab,
+  LogicalOperator,
+  ParentItem,
+  Resource,
+  ResourceGroups,
+} from "$lib/types";
+
+interface ItemParent {
+  id: string;
+  index: number;
+}
+
+let checksums: ItemChecksum[];
+
+export async function enrichGameJson(): Promise<void> {
+  const $fileHeaderShift = get(fileHeaderShift);
+  const $gameTemplate = get(gameTemplate);
+  const $gameUtils = get(gameUtils) as any;
+
+  checksums = [];
+
+  let shifts: number[] = [];
+
+  if ($fileHeaderShift > 0x0) {
+    shifts.push($fileHeaderShift);
+  }
+
+  if (utilsExists("initShifts")) {
+    shifts = $gameUtils.initShifts(shifts);
+  }
+
+  if (utilsExists("beforeItemsParsing")) {
+    await $gameUtils.beforeItemsParsing();
+  }
+
+  const items = $gameTemplate.items.reduce((items: Item[], item) => {
+    items.push(parseItem(item, shifts));
+
+    return items;
+  }, []);
+
+  const json = {
+    validator: $gameTemplate.validator,
+    items,
+    checksums,
+    resources: $gameTemplate.resources,
+    resourcesGroups: $gameTemplate.resourcesGroups,
+    resourcesLabels: $gameTemplate.resourcesLabels,
+    resourcesOrder: $gameTemplate.resourcesOrder,
+  };
+
+  gameJson.set(json);
+
+  // TODO: Find a way to not dissociate in 2 gameJson.set (useful for utils that required $gameJson)
+
+  updateResources();
+  updateResourcesGroups();
+
+  if (utilsExists("onReady")) {
+    $gameUtils.onReady();
+  }
+}
+
+export function getShift(shifts: number[]): number {
+  return shifts.reduce((total, shift) => total + shift, 0);
+}
+
+function getOverridedShift(
+  shifts: number[],
+  parent: number,
+  shift: number,
+  shiftIndex: number,
+): number {
+  if (parent === -1) {
+    return shiftIndex * shift;
+  }
+
+  const parentIndex = shifts.length - parent;
+
+  return shifts.reduce((total, value, index) => {
+    if (index < parentIndex) {
+      total += value;
+    } else if (index === parentIndex) {
+      total += shiftIndex * shift;
+    }
+
+    return total;
+  }, 0);
+}
+
+interface ParseItemOptions {
+  checksumsDisabled?: boolean;
+}
+
+export function parseItem(
+  item: Item,
+  shifts: number[],
+  parents: ItemParent[] = [],
+  options: ParseItemOptions = {},
+): Item {
+  const $gameUtils = get(gameUtils) as any;
+  const $isDebug = get(isDebug);
+
+  if ($isDebug) {
+    checkMissingFields(item);
+  }
+
+  let newItem = clone(item) as any;
+
+  ["id", "dataViewAltKey", "resource"].forEach((key) => {
+    regexReplace(newItem, key, parents);
+  });
+
+  if (newItem.button?.action !== undefined) {
+    regexReplace(newItem.button, "action", parents);
+  }
+
+  if ("uncontrolled" in item && item.id === undefined) {
+    newItem.id = generateUUID();
+  }
+
+  const instanceIndex = parents[parents.length - 1]?.index || 0;
+
+  if (utilsExists("overrideParseItem")) {
+    newItem = $gameUtils.overrideParseItem(newItem, instanceIndex);
+  }
+
+  if (newItem.name !== undefined) {
+    newItem.name = newItem.name.format(instanceIndex + 1);
+  }
+
+  if (utilsExists("overrideShift")) {
+    shifts = $gameUtils.overrideShift(item, shifts, instanceIndex);
+  }
+
+  if (newItem.offset !== undefined) {
+    if (newItem.overrideShift) {
+      const { parent, shift } = newItem.overrideShift;
+
+      newItem.offset += getOverridedShift(shifts, parent, shift, instanceIndex);
+    } else {
+      newItem.offset += getShift(shifts);
+    }
+  }
+
+  if (newItem.type === "bitflags") {
+    return parseBitflags(newItem, shifts, instanceIndex);
+  } else if (newItem.type === "checksum") {
+    if (newItem.control !== undefined) {
+      newItem.control.offsetStart += getShift(shifts);
+      newItem.control.offsetEnd += getShift(shifts);
+    }
+
+    if (options.checksumsDisabled) {
+      newItem.disabled = true;
+    }
+
+    checksums.push(newItem as ItemChecksum);
+  } else if (newItem.type === "component") {
+    return parseComponent(newItem, shifts, parents);
+  } else if (newItem.type === "container") {
+    return parseContainer(newItem, shifts, parents, options);
+  }
+
+  if (newItem.disableTabIf) {
+    newItem.disableTabIf = parseConditions(
+      newItem.disableTabIf,
+      shifts,
+      parents,
+    );
+  }
+
+  if (newItem.items) {
+    newItem.items = newItem.items.reduce((results: Item[], subitem: Item) => {
+      const parsedItem = parseItem(subitem, shifts, parents, options);
+
+      parsedItem.parent = newItem;
+
+      results.push(parsedItem);
+
+      return results;
+    }, []);
+  }
+
+  return newItem;
+}
+
+export function parseBitflags(
+  item: ItemBitflags,
+  shifts: number[],
+  instanceIndex: number,
+): ItemBitflags {
+  let offsetShift = 0x0;
+
+  if (item.overrideShift) {
+    const { parent, shift } = item.overrideShift;
+
+    offsetShift += getOverridedShift(shifts, parent, shift, instanceIndex);
+  } else {
+    offsetShift += getShift(shifts);
+  }
+
+  const flags = item.flags.reduce((flags: ItemBitflag[], flag) => {
+    flag.offset += offsetShift;
+
+    flags.push(flag);
+
+    return flags;
+  }, []);
+
+  const parsedItem: ItemBitflags = {
+    ...item,
+    flags,
+  };
+
+  return parsedItem;
+}
+
+export function parseComponent(
+  item: ItemComponent,
+  shifts: number[],
+  parents: ItemParent[],
+): any {
+  let props = item.props || {};
+
+  props = Object.entries(props).reduce(
+    (results: { [key: string]: any }, [key, value]) => {
+      if (key === "offset") {
+        results[key] = value + getShift(shifts);
+        return results;
+      }
+
+      const instance = parents.find((parent) => parent.id === value);
+
+      results[key] = instance !== undefined ? instance.index : value;
+
+      return results;
+    },
+    {},
+  );
+
+  const parsedItem: ItemComponent = {
+    ...item,
+    props,
+  };
+
+  return parsedItem;
+}
+
+function parseConditions(
+  condition: ItemIntCondition | LogicalOperator<ItemIntCondition> | string,
+  shifts: number[],
+  parents: ItemParent[],
+): string | Item | { [x: string]: Item[] } {
+  let parsedCondition;
+
+  if (typeof condition === "string") {
+    parsedCondition = condition;
+  } else if ("$and" in condition || "$or" in condition) {
+    const operand = getObjKey(condition, 0) as "$and" | "$or";
+
+    const parsedItems = condition[operand]!.map((subitem) =>
+      parseItem(subitem as Item, shifts, parents),
+    );
+
+    parsedCondition = { [operand]: parsedItems };
+  } else {
+    parsedCondition = parseItem(condition as ItemIntCondition, shifts, parents);
+  }
+
+  return parsedCondition;
+}
+
+export function parseContainer(
+  item: ItemContainer,
+  shifts: number[],
+  parents: ItemParent[],
+  options: ParseItemOptions,
+): any {
+  const $dataViewAlt = get(dataViewAlt);
+  const $gameTemplate = get(gameTemplate);
+  const $gameUtils = get(gameUtils) as any;
+
+  const parsedContainer: any = {
+    id: item.id,
+    type: item.instanceType,
+    enumeration: item.enumeration,
+    resource: item.resource,
+    resourceOrder: item.resourceOrder,
+    indexes: true,
+    defaultIndex: item.defaultIndex,
+    vertical: item.vertical,
+    fixedWidth: item.fixedWidth,
+    onTabChange: item.onTabChange,
+    hidden: item.hidden,
+    items: [],
+  };
+
+  if (item.pointer !== undefined) {
+    let pointer = item.pointer;
+
+    if (Array.isArray(item.pointer)) {
+      pointer = getRegionArray(item.pointer);
+    }
+
+    if (utilsExists("pointerToOffset")) {
+      shifts = [$gameUtils.pointerToOffset(pointer)];
+    } else {
+      let dataView: DataView | undefined = undefined;
+
+      if (item.pointerDataViewAltKey) {
+        dataView = $dataViewAlt[item.pointerDataViewAltKey];
+      }
+
+      shifts = [
+        getInt(pointer as number, (item as any).pointerDataType, {}, dataView),
+      ];
+    }
+  }
+
+  if (item.instanceType === "tabs" && item.prependSubinstance) {
+    item.prependSubinstance.forEach((subitem: any) => {
+      subitem.parent = parsedContainer;
+
+      parsedContainer.items.push({
+        ...subitem,
+        items: subitem.items
+          ? subitem.items.reduce((results: any, item: any) => {
+              const parsedItem = parseItem(item, shifts, parents, options);
+
+              parsedItem.parent = subitem;
+
+              results.push(parsedItem);
+
+              return results;
+            }, [])
+          : [],
+      });
+    });
+  }
+
+  for (let i = 0x0; i < item.instances; i += 0x1) {
+    let instanceShifts: number[] = [];
+
+    let isOverrided = false;
+
+    if (utilsExists("overrideParseContainerItemsShifts")) {
+      [isOverrided, instanceShifts] =
+        $gameUtils.overrideParseContainerItemsShifts(item, shifts, i);
+    }
+
+    if (!isOverrided) {
+      instanceShifts = [...shifts, i * item.length];
+    }
+
+    const disabled = instanceShifts.at(-1) === -1;
+
+    const parsedItem: any = {
+      flex: item.flex,
+      noMargin: item.noMargin,
+      disabled,
+      parent: parsedContainer,
+      items: [],
+    };
+
+    if (item.items) {
+      parsedItem.items = item.items.reduce((results: any, subitem: any) => {
+        const itemParents = [
+          ...parents,
+          { id: item.instanceId || "", index: i },
+        ];
+
+        const parsedSubitem = parseItem(subitem, instanceShifts, itemParents, {
+          checksumsDisabled: disabled,
+        });
+
+        parsedSubitem.parent = parsedItem;
+
+        results.push(parsedSubitem);
+
+        return results;
+      }, []);
+    }
+
+    if (item.instanceType === "section") {
+      if (item.enumeration) {
+        parsedItem.name = item.enumeration.format(i + 1);
+      } else if (
+        item.resource &&
+        $gameTemplate.resources &&
+        $gameTemplate.resources[item.resource]
+      ) {
+        parsedItem.name = $gameTemplate.resources[item.resource][i];
+      }
+
+      parsedItem.type = "section";
+    }
+
+    if (item.instanceType === "tabs") {
+      if (item.disableSubinstanceIf) {
+        parsedItem.disableTabIf = parseConditions(
+          item.disableSubinstanceIf,
+          instanceShifts,
+          parents,
+        );
+      }
+    }
+
+    parsedContainer.items.push(parsedItem);
+  }
+
+  if (item.instanceType === "tabs" && item.appendSubinstance) {
+    item.appendSubinstance.forEach((subitem: any) => {
+      subitem.parent = parsedContainer;
+
+      parsedContainer.items.push({
+        ...subitem,
+        items: subitem.items
+          ? subitem.items.reduce((results: any, item: any) => {
+              const parsedItem = parseItem(item, shifts, parents, options);
+
+              parsedItem.parent = subitem;
+
+              results.push(parsedItem);
+
+              return results;
+            }, [])
+          : [],
+      });
+    });
+  }
+
+  return parsedContainer;
+}
+
+function checkMissingFields(item: Item): void {
+  const $isDebug = get(isDebug);
+
+  const errors = [];
+
+  if (
+    item.type &&
+    ![
+      "bitflags",
+      "component",
+      "container",
+      "message",
+      "group",
+      "section",
+      "tabs",
+    ].includes(item.type) &&
+    (item as any).offset === undefined
+  ) {
+    errors.push("offset");
+  }
+
+  if (
+    ["container", "group", "section", "tabs"].includes(item.type) &&
+    (item as any).items === undefined
+  ) {
+    errors.push("items");
+  }
+
+  if (item.type === "bitflags" && item.flags === undefined) {
+    errors.push("flags");
+  }
+
+  if (item.type === "checksum" && item.control.offsetStart === undefined) {
+    errors.push("control.offsetStart");
+  }
+
+  if (item.type === "checksum" && item.control.offsetEnd === undefined) {
+    errors.push("control.offsetEnd");
+  }
+
+  if (
+    ["checksum", "variable"].includes(item.type) &&
+    (item as any).dataType === undefined
+  ) {
+    errors.push("dataType");
+  }
+
+  if (item.type === "component" && item.component === undefined) {
+    errors.push("component");
+  }
+
+  if (item.type === "container" && item.length === undefined) {
+    errors.push("length");
+  }
+
+  if (item.type === "container" && item.instances === undefined) {
+    errors.push("instances");
+  }
+
+  if (item.type === "container" && item.instanceType === undefined) {
+    errors.push("instanceType");
+  }
+
+  if (item.type === "message" && item.message === undefined) {
+    errors.push("message");
+  }
+
+  if (
+    item.type === "variable" &&
+    item.dataType === "string" &&
+    item.length === undefined
+  ) {
+    errors.push("length");
+  }
+
+  if (
+    item.type === "variable" &&
+    item.dataType === "string" &&
+    item.letterDataType === undefined
+  ) {
+    errors.push("letterDataType");
+  }
+
+  if ($isDebug) {
+    errors.forEach((error) => {
+      console.warn(
+        `${(item as any).name || item.type} is '${
+          item.type
+        }' type but missing the '${error}' field`,
+      );
+    });
+  }
+}
+
+function regexReplace(item: any, key: string, parents: ItemParent[]): void {
+  if (item[key] === undefined || !item[key].match(/%/)) {
+    return;
+  }
+
+  if (item[key].match(/%index%/)) {
+    const instanceIndex = parents.at(-1)?.index || 0;
+
+    item[key] = item[key].replace("%index%", `${instanceIndex}`);
+  }
+
+  if (item[key].match(/%parent(\d|)%/)) {
+    let match;
+
+    while ((match = /%parent(\d|)%/.exec(item[key]))) {
+      const n = 2 + (parseInt(match[1]) || 0);
+      const parentIndex = parents.at(-n)?.index || 0;
+
+      item[key] = item[key].replace(match[0], `${parentIndex}`);
+    }
+  }
+}
+
+export function getItem(
+  id: RegExp | string,
+  items?: (Item | ItemTab)[],
+): Item | ItemTab | undefined {
+  const $gameJson = get(gameJson);
+  const $gameTemplate = get(gameTemplate);
+
+  if (!items) {
+    return getItem(id, $gameJson.items || $gameTemplate.items);
+  }
+
+  return items.reduce(
+    (result: Item | ItemTab | undefined, item: Item | ItemTab) => {
+      if (result) {
+        return result;
+      }
+
+      if (
+        "id" in item &&
+        ((typeof id === "string" && item.id === id) ||
+          (typeof id === "object" && item.id?.match(id)))
+      ) {
+        return item;
+      } else if ("items" in item) {
+        const found = getItem(id, item.items as Item[]);
+
+        if (found) {
+          return found;
+        }
+      }
+
+      return result;
+    },
+    undefined,
+  );
+}
+
+export function getClosestItem(
+  id: RegExp | string,
+  item: Item | ParentItem,
+): Item | ParentItem | undefined {
+  if (!item.parent) {
+    return;
+  }
+
+  let find = undefined;
+
+  if (
+    (typeof id === "string" && id === item.parent.id) ||
+    (typeof id === "object" && item.parent.id?.match(id))
+  ) {
+    return item.parent;
+  }
+
+  if (typeof id === "string") {
+    find = item.parent.items.find((item) => "id" in item && item.id === id);
+  } else {
+    find = item.parent.items.find((item) => "id" in item && item.id?.match(id));
+  }
+
+  if (find) {
+    return find;
+  }
+
+  return getClosestItem(id, item.parent);
+}
+
+export function getResource(key = ""): Resource | undefined {
+  const $gameJson = get(gameJson);
+
+  let resource = key ? $gameJson.resources?.[key] : undefined;
+
+  if (resource) {
+    if (Array.isArray(resource)) {
+      resource = getRegionArray(resource);
+    }
+
+    return resource as Resource;
+  }
+}
+
+export function updateResources(
+  resource = "",
+  overrideValues?: Resource,
+): void {
+  const $gameJson = get(gameJson);
+  const $gameTemplate = get(gameTemplate);
+
+  let resources = { ...$gameTemplate.resources };
+
+  if (resource && $gameTemplate.resources?.[resource]) {
+    if (overrideValues) {
+      resources = {
+        ...$gameJson.resources,
+        [resource]: overrideValues,
+      };
+    } else if (typeof resources[resource] === "string") {
+      const values = getUtils(resources[resource] as string);
+
+      resources = {
+        ...$gameJson.resources,
+        [resource]: values,
+      };
+    }
+  } else {
+    resources = Object.entries(resources).reduce(
+      (results: any, [key, value]) => {
+        if (typeof value === "string") {
+          value = getUtils(value as string);
+        }
+
+        results[key] = value;
+
+        return results;
+      },
+      {},
+    );
+  }
+
+  gameJson.set({ ...$gameJson, resources });
+}
+
+export function updateResourceOrder(
+  resource = "",
+  overrideValues: number[],
+): void {
+  const $gameJson = get(gameJson);
+
+  if (resource && $gameJson.resourcesOrder?.[resource]) {
+    if (overrideValues) {
+      $gameJson.resourcesOrder[resource] = overrideValues;
+    }
+  }
+}
+
+export function updateResourcesGroups(
+  resource = "",
+  overrideValues?: ResourceGroups,
+): void {
+  const $gameJson = get(gameJson);
+  const $gameTemplate = get(gameTemplate);
+
+  let resourcesGroups = { ...$gameTemplate.resourcesGroups };
+
+  if (overrideValues) {
+    resourcesGroups = {
+      ...$gameJson.resourcesGroups,
+      [resource]: overrideValues,
+    };
+  } else if (resource && $gameTemplate.resourcesGroups?.[resource]) {
+    if (typeof resourcesGroups[resource] === "string") {
+      const values = getUtils(resourcesGroups[resource] as string);
+
+      resourcesGroups = {
+        ...$gameJson.resourcesGroups,
+        [resource]: values,
+      };
+    }
+  } else {
+    resourcesGroups = Object.entries(resourcesGroups).reduce(
+      (results: any, [key, value]) => {
+        if (typeof value === "string") {
+          value = getUtils(value as string);
+        }
+
+        results[key] = value;
+
+        return results;
+      },
+      {},
+    );
+  }
+
+  gameJson.set({ ...$gameJson, resourcesGroups });
+}

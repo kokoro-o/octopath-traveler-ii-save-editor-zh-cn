@@ -1,0 +1,616 @@
+<script lang="ts">
+  import { base } from "$app/paths";
+  import FileSaver from "file-saver";
+  import { onDestroy } from "svelte";
+
+  import { page } from "$app/stores";
+  import EjectIcon from "$lib/assets/Eject.svelte";
+  import PatchIcon from "$lib/assets/Patch.svelte";
+  import SaveIcon from "$lib/assets/Save.svelte";
+  import TranslateIcon from "$lib/assets/Translate.svelte";
+  import Dropzone from "$lib/components/Dropzone.svelte";
+  import FileVisualizer from "$lib/components/FileVisualizer/FileVisualizer.svelte";
+  import Content from "$lib/components/Items/Content.svelte";
+  import RegionModal from "$lib/components/RegionModal.svelte";
+  import {
+    dataView,
+    fileHeaderShift,
+    fileName,
+    gameJson,
+    gamePlatform,
+    gameRegion,
+    gameTemplate,
+    gameUtils,
+    isDebug,
+    isDirty,
+    isFileVisualizerOpen,
+    locale,
+  } from "$lib/stores";
+  import { updateChecksums } from "$lib/utils/checksum";
+  import { formatPlatforms, getGame } from "$lib/utils/db.js";
+  import debug from "$lib/utils/debug";
+  import { editorText } from "$lib/utils/editorLocale";
+  import { capitalize, setLocalStorage, utilsExists } from "$lib/utils/format";
+  import { enrichGameJson } from "$lib/utils/parser";
+  import { reset } from "$lib/utils/state";
+  import {
+    getPlatformName,
+    getPlatformRegions,
+    getRegionIndex,
+    getRegionName,
+    getRegions,
+  } from "$lib/utils/validator";
+
+  import type { Game, GameJson, GameTool, Patch } from "$lib/types";
+
+  const game = getGame($page.params["gameId"]!) as Game;
+
+  const t = (text: string) => editorText(game.id, text);
+
+  let tool = "";
+  let toolDetails = {} as GameTool;
+
+  switch ($page.params["tool"]) {
+    case "randomizer":
+      tool = "Randomizer";
+      toolDetails = game.tools.randomizer!;
+      break;
+    case "rom-editor":
+      tool = "Rom Editor";
+      toolDetails = game.tools.romEditor!;
+      break;
+    case "save-editor":
+      tool = "Save Editor";
+      toolDetails = game.tools.saveEditor!;
+      break;
+  }
+
+  const metaTitle = `${game.id === "octopath-traveler-ii" ? "歧路旅人Ⅱ · 简体中文版" : game.metaName} - ${formatPlatforms(game.platforms)} - ${t(tool)}`;
+  const metaDescription = `A ${tool} for ${game.metaName} on ${formatPlatforms(game.platforms)}.${toolDetails.compatibilities ? ` Compatible with ${toolDetails.compatibilities.join(",")}.` : ""} Use a collection of tools to rediscover your favorite games by editing your saves or randomizing gameplay elements.`;
+  const metaImage = `${$page.url.origin}${base}/img/games/${game.id}/logo.png`;
+
+  let logoClickCount = 0;
+  let logoClickTimer: NodeJS.Timeout;
+
+  let dataViewTmp: DataView | undefined;
+  let fileHeaderShiftTmp = 0x0;
+  let fileNameTmp = "";
+  let regions: string[] = [];
+  let loadingPercent = 0;
+  let error = "";
+
+  let patchInputEl: HTMLInputElement;
+  let patchToolbarOpen = false;
+  let patchIsLoading = false;
+  let patchError = "";
+  let patchSuccess = false;
+
+  function handleClick(): void {
+    patchToolbarOpen = false;
+
+    resetPatchStatus();
+  }
+
+  function handleFileEject(): void {
+    if ($isDirty) {
+      const confirmation = confirm(
+        t("You have unsaved changes, are you sure you want to eject your file?"),
+      );
+
+      if (!confirmation) {
+        return;
+      }
+    }
+
+    regions = [];
+
+    reset();
+  }
+
+  async function handleFileSave(): Promise<void> {
+    updateChecksums();
+
+    let buffer = $dataView.buffer as ArrayBuffer;
+
+    if (utilsExists("beforeSaving")) {
+      buffer = await $gameUtils.beforeSaving();
+    }
+
+    const blob = new Blob([buffer], {
+      type: "application/octet-stream",
+    });
+
+    FileSaver.saveAs(blob, game.id === "octopath-traveler-ii" ? `${$fileName}.edited` : $fileName);
+
+    $isDirty = false;
+  }
+
+  function handleLocaleChange(event: Event): void {
+    const target = event.target as HTMLInputElement;
+
+    $locale = target.value;
+  }
+
+  function handleLogoClick(): void {
+    if (!$isDebug) {
+      if (logoClickCount === 0) {
+        logoClickTimer = setTimeout(() => {
+          clearTimeout(logoClickTimer);
+          logoClickCount = 0;
+        }, 2000);
+      }
+
+      logoClickCount += 1;
+
+      if (logoClickCount === 5) {
+        $isDebug = true;
+        setLocalStorage("debug", "true");
+      }
+    }
+  }
+
+  function isLocalized(): boolean {
+    if (!$gameTemplate.localization) {
+      return false;
+    }
+
+    const regions = Object.keys(getPlatformRegions());
+
+    const isLocalized = $gameTemplate.localization.regions.includes(
+      regions[$gameRegion],
+    );
+
+    if (isLocalized && $locale === "") {
+      $locale = $gameTemplate.localization.languages[0];
+    }
+
+    return isLocalized;
+  }
+
+  async function initTool(region: string): Promise<void> {
+    const regionIndex = getRegionIndex(region);
+
+    if (regionIndex !== -1) {
+      $dataView = dataViewTmp as DataView;
+      $fileHeaderShift = fileHeaderShiftTmp;
+      $fileName = fileNameTmp;
+      $gameRegion = regionIndex;
+
+      await enrichGameJson();
+
+      uploadSuccess();
+    } else {
+      regions = [];
+      uploadFailed(7002);
+    }
+
+    dataViewTmp = undefined;
+    fileNameTmp = "";
+  }
+
+  function onFileFailed(): void {
+    uploadFailed(7001);
+  }
+
+  async function onFileUploaded(file: File, dataView: DataView): Promise<void> {
+    dataViewTmp = dataView;
+    fileNameTmp = file.name;
+    fileHeaderShiftTmp = 0x0;
+
+    $gamePlatform = -1;
+
+    if (utilsExists("setGamePlatform")) {
+      fileHeaderShiftTmp = $gameUtils.setGamePlatform(dataViewTmp, fileNameTmp);
+    }
+
+    if (Object.keys($gameTemplate.validator.platforms).length === 1) {
+      $gamePlatform = 0;
+    }
+
+    if (utilsExists("initHeaderShift")) {
+      fileHeaderShiftTmp = $gameUtils.initHeaderShift(dataViewTmp);
+    }
+
+    if (utilsExists("beforeInitDataView")) {
+      dataViewTmp = await $gameUtils.beforeInitDataView(
+        dataViewTmp,
+        fileHeaderShiftTmp,
+      );
+    }
+
+    if ($gamePlatform === -1) {
+      debug.error("Platform not defined on a multi-platform tool.");
+      return;
+    }
+
+    if (utilsExists("overrideGetRegions")) {
+      regions = await $gameUtils.overrideGetRegions(
+        dataViewTmp,
+        fileHeaderShiftTmp,
+      );
+    } else {
+      regions = getRegions(dataViewTmp as DataView, fileHeaderShiftTmp);
+    }
+
+    if (
+      $gameTemplate.validator.fileNames &&
+      !$gameTemplate.validator.fileNames.find((fileName) => {
+        if (typeof fileName === "object") {
+          return file.name.match(fileName);
+        } else if (typeof fileName === "string") {
+          return fileName === file.name;
+        }
+      })
+    ) {
+      regions = [];
+    }
+
+    if (regions.length === 1) {
+      await initTool(regions[0]);
+    } else if (regions.length === 0) {
+      if (utilsExists("onInitFailed")) {
+        $gameUtils.onInitFailed();
+      }
+
+      uploadFailed(7000);
+    }
+  }
+
+  function uploadFailed(code: number): void {
+    error = $gameTemplate.validator.error;
+
+    if (!$isDebug) {
+      console.warn("Save could not be opened (local processing).", { code });
+    }
+  }
+
+  function uploadSuccess(): void {
+    error = "";
+
+    if (!$isDebug) {
+      console.info("Save opened locally; no save data was uploaded.");
+    }
+  }
+
+  // Patch
+
+  function handlePatchImportClick(): void {
+    if (!patchIsLoading) {
+      patchInputEl.click();
+    }
+  }
+
+  function handlePatchInputChange(event: Event): void {
+    const files = (event.target as HTMLInputElement).files || [];
+    const file = files[0];
+
+    handlePatchImport(file);
+  }
+
+  function handlePatchImport(file: File): void {
+    resetPatchStatus();
+
+    if (!file || file.size === 0) {
+      patchError = "not a .gtc file";
+      return;
+    }
+
+    patchIsLoading = true;
+
+    const fileReader = new FileReader();
+
+    fileReader.onload = (event: ProgressEvent<FileReader>) => {
+      try {
+        const patch: Patch<unknown> = JSON.parse(`${event.target?.result}`);
+
+        if (patch.identifier !== $page.params["gameId"]) {
+          patchIsLoading = false;
+          patchError = "bad identifier";
+          return;
+        }
+
+        if (patch.platform !== getPlatformName()) {
+          patchIsLoading = false;
+          patchError = "bad platform";
+          return;
+        }
+
+        if (patch.regions && !patch.regions.includes(getRegionName())) {
+          patchIsLoading = false;
+          patchError = "bad region";
+          return;
+        }
+
+        $gameUtils.importPatch(patch);
+
+        patchError = "";
+        patchSuccess = true;
+      } catch {
+        patchError = "not a .gtc file";
+      }
+
+      patchIsLoading = false;
+    };
+
+    fileReader.readAsText(file);
+  }
+
+  function handlePatchGenerate(): void {
+    const patch = $gameUtils.generatePatch();
+
+    const blob = new Blob([JSON.stringify(patch)], {
+      type: "application/json",
+    });
+
+    FileSaver.saveAs(blob, `${patch.identifier}.gtc`);
+
+    $isDirty = false;
+  }
+
+  function handlePatchToolbarToggle(): void {
+    patchToolbarOpen = !patchToolbarOpen;
+
+    resetPatchStatus();
+  }
+
+  function resetPatchStatus(): void {
+    patchError = "";
+    patchSuccess = false;
+  }
+
+  onDestroy(() => {
+    reset();
+
+    $gameTemplate = {} as GameJson;
+    $gameUtils = {};
+  });
+</script>
+
+<!-- prettier-ignore -->
+<svelte:head>
+  <title>{metaTitle} | Game Tools Collection</title>
+  <meta property="og:title" content={metaTitle} />
+  <meta property="description" content={metaDescription} />
+  <meta property="og:description" content={metaDescription} />
+  <meta property="og:image" content={metaImage} />
+</svelte:head>
+
+<svelte:window on:click={handleClick} />
+
+<!-- svelte-ignore a11y-click-events-have-key-events -->
+<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+<!-- svelte-ignore a11y-no-static-element-interactions -->
+<div class="gtc-tool" class:gtc-tool-chinese={game.id === "octopath-traveler-ii"}>
+  {#if $dataView.byteLength === 0}
+    <Dropzone {onFileFailed} {onFileUploaded} bind:loadingPercent>
+      <svelte:fragment slot="dropzone-inner" let:isDragging let:isFileLoading>
+        <img src="{base}/img/games/{game.id}/logo.png" alt={game.metaName} />
+        {#if isDragging}
+          <p>{t("Drop the file here.")}</p>
+        {:else if !isFileLoading}
+          <p>{$gameTemplate.validator?.text || ""}</p>
+        {:else}
+          <p>{t("Loading")} {loadingPercent}%</p>
+        {/if}
+        {#if $gameTemplate?.validator?.hint}
+          <p class="gtc-tool-hint">{@html $gameTemplate.validator.hint}</p>
+        {/if}
+        {#if error}
+          <p class="gtc-tool-error">
+            {@html $gameTemplate.validator.error}
+          </p>
+        {/if}
+      </svelte:fragment>
+      <svelte:fragment slot="dropzone">
+        <div class="gtc-tool-details">
+          <p>
+            {t("Supported platforms:")}
+            <span>{formatPlatforms(game.platforms)}</span>
+          </p>
+          {#if toolDetails.compatibilities}
+            <p>
+              {t("Compatible with:")}
+              <span>{toolDetails.compatibilities.join(",")}</span>
+            </p>
+          {/if}
+        </div>
+      </svelte:fragment>
+    </Dropzone>
+    {#if regions.length > 1}
+      <RegionModal
+        {regions}
+        onSubmit={async (region) => await initTool(region)}
+      />
+    {/if}
+  {:else}
+    <div class="gtc-tool-banner">
+      <img
+        src="{base}/img/games/{game.id}/logo.png"
+        alt={game.metaName}
+        on:click={handleLogoClick}
+      />
+      <div>
+        {#if $gameTemplate.localization && isLocalized()}
+          <div class="gtc-tool-locale">
+            <TranslateIcon />
+            <select on:change={handleLocaleChange}>
+              {#each $gameTemplate.localization.languages as language}
+                <option value={language}>{capitalize(language)}</option>
+              {/each}
+            </select>
+          </div>
+        {/if}
+        {#if utilsExists("importPatch") || utilsExists("generatePatch")}
+          <div class="gtc-tool-patchtoolbar" on:click|stopPropagation>
+            <button
+              type="button"
+              class:gtc-tool-patchtoolbar-focus={patchToolbarOpen}
+              on:click={handlePatchToolbarToggle}
+            >
+              <PatchIcon /> Patch
+            </button>
+            {#if patchToolbarOpen}
+              <ul class="gtc-tool-toolbar">
+                {#if utilsExists("importPatch")}
+                  <li
+                    class:gtc-tool-patchtoolbar-loading={patchIsLoading}
+                    class:gtc-tool-patchtoolbar-error={patchError}
+                    class:gtc-tool-patchtoolbar-success={patchSuccess}
+                    on:click={handlePatchImportClick}
+                  >
+                    Import Patch
+                    {#if patchIsLoading}
+                      <span>(loading...)</span>
+                    {:else if patchError}
+                      <span>({patchError})</span>
+                    {:else if patchSuccess}
+                      <span>(patch applied)</span>
+                    {/if}
+                    <input
+                      type="file"
+                      bind:this={patchInputEl}
+                      on:change={handlePatchInputChange}
+                    />
+                  </li>
+                {/if}
+                {#if utilsExists("generatePatch")}
+                  <li on:click={handlePatchGenerate}>Generate Patch</li>
+                {/if}
+              </ul>
+            {/if}
+          </div>
+        {/if}
+        <button type="button" class="gtc-tool-eject" on:click={handleFileEject}>
+          <EjectIcon /> {t("Eject")}
+        </button>
+        <button type="button" class="gtc-tool-save" on:click={handleFileSave}>
+          <SaveIcon />
+          {tool === "Randomizer" ? "Generate" : t("Save")}
+        </button>
+      </div>
+    </div>
+    <Content items={$gameJson.items} />
+    {#if $isFileVisualizerOpen}
+      <FileVisualizer />
+    {/if}
+  {/if}
+</div>
+
+<style lang="postcss">
+  .gtc-tool {
+    @apply flex flex-1 flex-col;
+
+    &.gtc-tool-chinese {
+      color: #dce3ed;
+      font-family: "Roboto", "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+
+    & .gtc-tool-details {
+      @apply absolute right-4 top-full mt-2 text-right text-xs;
+
+      & span {
+        @apply text-white;
+      }
+    }
+
+    & .gtc-tool-hint {
+      @apply whitespace-pre-line text-center text-primary-400;
+    }
+
+    & .gtc-tool-error {
+      @apply text-center text-red-700;
+    }
+
+    & .gtc-tool-banner {
+      @apply mb-4 flex h-10 items-center justify-between;
+
+      & img {
+        height: 180%;
+      }
+
+      & div {
+        @apply flex;
+
+        & button {
+          @apply ml-2 flex;
+
+          &.gtc-tool-eject {
+            @apply bg-red-900 text-red-100;
+
+            &:hover {
+              @apply bg-red-700;
+            }
+          }
+
+          &.gtc-tool-save {
+            @apply bg-green-900 text-green-100;
+
+            &:hover {
+              @apply bg-green-700;
+            }
+          }
+
+          & :global(svg) {
+            @apply -ml-1 mr-2 h-5 w-5;
+          }
+        }
+
+        &.gtc-tool-locale {
+          @apply flex items-center rounded bg-primary-600 px-2;
+
+          & select {
+            @apply w-20 rounded bg-primary-600 text-xs text-white;
+          }
+        }
+
+        &.gtc-tool-patchtoolbar {
+          @apply relative mr-2;
+
+          & .gtc-tool-patchtoolbar-error {
+            @apply text-red-700;
+          }
+
+          & .gtc-tool-patchtoolbar-loading {
+            @apply text-yellow-700;
+          }
+
+          & .gtc-tool-patchtoolbar-success {
+            @apply text-green-700;
+          }
+
+          & button {
+            @apply bg-blue-900 text-blue-100;
+
+            &:hover {
+              @apply bg-blue-700;
+            }
+
+            &.gtc-tool-patchtoolbar-focus {
+              @apply bg-blue-700;
+            }
+          }
+
+          & input {
+            @apply hidden;
+          }
+
+          & span {
+            @apply ml-1;
+          }
+        }
+
+        & .gtc-tool-toolbar {
+          @apply absolute left-2 top-10 z-20 w-44 rounded bg-primary-500 py-1 text-xs shadow;
+
+          & li {
+            @apply flex cursor-pointer px-2 py-1;
+
+            &:hover {
+              @apply bg-primary-400;
+            }
+          }
+        }
+      }
+    }
+  }
+</style>

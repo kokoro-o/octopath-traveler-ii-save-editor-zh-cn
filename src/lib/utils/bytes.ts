@@ -1,0 +1,1183 @@
+import { get } from "svelte/store";
+
+import {
+  dataView,
+  dataViewAlt,
+  dataViewAltMetas,
+  isDebug,
+  isDirty,
+} from "$lib/stores";
+import debug from "$lib/utils/debug";
+import {
+  getObjKey,
+  getPartialValue,
+  isPartial,
+  makeOperations,
+  utilsExists,
+} from "$lib/utils/format";
+
+import type {
+  Binary,
+  DataType,
+  DataTypeInt,
+  DataTypeUInt,
+  IntOperation,
+  ItemBitflag,
+  ItemBitflags,
+  ItemInt,
+  StringEncoding,
+} from "$lib/types";
+
+import {
+  decodeChar,
+  encodeChar,
+  isCharBigEndian,
+  isCharUint16,
+} from "./encoding";
+import { getJsonInt, setJsonInt } from "./json";
+import { getResource } from "./parser";
+
+export function getDataView(dataViewTmp?: DataView): DataView {
+  return dataViewTmp && dataViewTmp.byteLength > 0
+    ? dataViewTmp
+    : get(dataView);
+}
+
+export function isDataViewAltExists(key: string): boolean {
+  const $dataViewAlt = get(dataViewAlt);
+
+  const exists = Boolean(key && $dataViewAlt[key]);
+
+  if (key && !exists) {
+    debug.error(`dataViewAlt ${key} is not initialized.`);
+  }
+
+  return exists;
+}
+
+export function byteswap(
+  dataView?: DataView,
+  start = 0x0,
+  end?: number,
+  length = 0x4,
+): DataView {
+  const $dataView = getDataView(dataView);
+
+  if (!end) {
+    end = $dataView.byteLength;
+  }
+
+  const array = [];
+
+  if (start > 0x0) {
+    for (let i = 0x0; i < start; i += 0x1) {
+      array.push(getInt(i, "uint8", {}, $dataView));
+    }
+  }
+
+  for (let i = start; i < end; i += length) {
+    array.push(
+      ...[...Array(length).keys()].map((index) =>
+        getInt(i + length - index - 1, "uint8", {}, $dataView),
+      ),
+    );
+  }
+
+  if (end < $dataView.byteLength) {
+    for (let i = end; i < $dataView.byteLength; i += 0x1) {
+      array.push(getInt(i, "uint8", {}, $dataView));
+    }
+  }
+
+  const uint8Array = new Uint8Array(array);
+
+  return new DataView(uint8Array.buffer);
+}
+
+export function byteswap16(number: number): number {
+  return ((number & 0xff) << 0x8) | ((number >> 0x8) & 0xff);
+}
+
+export function byteswap32(number: number): number {
+  return (
+    ((number & 0xff) << 0x18) |
+    ((number & 0xff00) << 0x8) |
+    ((number >> 0x8) & 0xff00) |
+    ((number >> 0x18) & 0xff)
+  );
+}
+
+export function addPadding(
+  dataView?: DataView,
+  value = 0x0,
+  type: "even" | "odd" = "even",
+  start = 0x0,
+  end?: number,
+): DataView {
+  const $dataView = getDataView(dataView);
+
+  if (!end) {
+    end = $dataView.byteLength;
+  }
+
+  const array = [];
+
+  if (start > 0x0) {
+    for (let i = 0x0; i < start; i += 0x1) {
+      array.push(getInt(i, "uint8", {}, $dataView));
+    }
+  }
+
+  let j = 0x0;
+
+  for (let i = 0x0; i < end; i += 0x1) {
+    if (
+      (type === "even" && j % 0x2 === 0) ||
+      (type === "odd" && j % 0x2 !== 0)
+    ) {
+      array.push(value);
+
+      j += 0x1;
+    }
+
+    array.push(getInt(i, "uint8", {}, $dataView));
+
+    j += 0x1;
+  }
+
+  if (end < $dataView.byteLength) {
+    for (let i = end; i < $dataView.byteLength; i += 0x1) {
+      array.push(getInt(i, "uint8", {}, $dataView));
+    }
+  }
+
+  const uint8Array = new Uint8Array(array);
+
+  return new DataView(uint8Array.buffer);
+}
+
+export function removePadding(
+  dataView?: DataView,
+  type: "even" | "odd" = "even",
+  start = 0x0,
+  end?: number,
+): DataView {
+  const $dataView = getDataView(dataView);
+
+  if (!end) {
+    end = $dataView.byteLength;
+  }
+
+  const array = [];
+
+  if (start > 0x0) {
+    for (let i = 0x0; i < start; i += 0x1) {
+      array.push(getInt(i, "uint8", {}, $dataView));
+    }
+  }
+
+  for (let i = start; i < end; i += 0x1) {
+    if (
+      (type === "even" && i % 0x2 !== 0) ||
+      (type === "odd" && i % 0x2 === 0)
+    ) {
+      array.push(getInt(i, "uint8", {}, dataView));
+    }
+  }
+
+  if (end < $dataView.byteLength) {
+    for (let i = end; i < $dataView.byteLength; i += 0x1) {
+      array.push(getInt(i, "uint8", {}, $dataView));
+    }
+  }
+
+  const uint8Array = new Uint8Array(array);
+
+  return new DataView(uint8Array.buffer);
+}
+
+export function copyInt(
+  offsetSrc: number,
+  offsetDst: number,
+  length = 0x1,
+  dataViewSrc?: DataView,
+  dataViewAltKeyDst?: string,
+): void {
+  for (let i = 0x0; i < length; i += 0x1) {
+    const srcInt = getInt(offsetSrc + i, "uint8", {}, dataViewSrc);
+
+    setInt(offsetDst + i, "uint8", srcInt, {}, dataViewAltKeyDst);
+  }
+}
+
+export function dataTypeToLength(
+  dataType: Exclude<DataType, "string">,
+): number {
+  switch (dataType) {
+    case "boolean":
+    case "bit":
+    case "lower4":
+    case "upper4":
+    case "int8":
+    case "uint8":
+      return 1;
+    case "int16":
+    case "uint16":
+      return 2;
+    case "int24":
+    case "uint24":
+      return 3;
+    case "int32":
+    case "uint32":
+    case "float32":
+      return 4;
+    case "int64":
+    case "uint64":
+      return 8;
+  }
+}
+
+export function dataTypeToValue(dataType: Exclude<DataType, "string">): number {
+  switch (dataType) {
+    case "lower4":
+    case "upper4":
+      return 0xf;
+    case "int8":
+    case "uint8":
+      return 0xff;
+    case "int16":
+    case "uint16":
+      return 0xffff;
+    case "int24":
+    case "uint24":
+      return 0xffffff;
+    case "int32":
+    case "uint32":
+    case "float32":
+      return 0xffffffff;
+    case "int64":
+    case "uint64":
+      return 0xfffffffffffff;
+    default:
+      return 0x0;
+  }
+}
+
+export function bitToOffset(bit: number): number {
+  return bit >> 0x3;
+}
+
+export function byteswapOffset(offset: number): number {
+  return (((offset >> 0x2) + 0x1) << 0x2) - 0x1 - (offset % 4);
+}
+
+export function extractBit(number: number, bit: number): boolean {
+  return (number & (0x1 << bit)) !== 0x0;
+}
+
+export function injectBit(number: number, bit: number, value: boolean): number {
+  if (value) {
+    number |= 0x1 << bit;
+  } else {
+    number &= ~(0x1 << bit);
+  }
+
+  return number;
+}
+
+export function extractBinary(
+  number: number,
+  bitStart: number,
+  bitLength: number,
+): number {
+  const dataLength = Math.ceil((bitStart + bitLength) / 0x8);
+
+  const base = Math.pow(0x100, dataLength) - 0x1;
+  const shift = dataLength * 0x8 - (bitStart + bitLength);
+
+  const mask = base >>> shift;
+
+  return (number & mask) >>> bitStart;
+}
+
+export function injectBinary(
+  number: number,
+  valueToInject: number,
+  dataType: Exclude<DataType, "boolean" | "int64" | "uint64" | "string">,
+  bitStart: number,
+  bitLength: number,
+): number {
+  const dataTypeLength = dataTypeToLength(dataType);
+  const dataTypeValue = dataTypeToValue(dataType);
+
+  const base = dataTypeValue >>> (dataTypeLength * 8 - bitLength);
+
+  const mask = (dataTypeValue ^ (base << bitStart)) >>> 0x0;
+
+  return (valueToInject << bitStart) | (number & mask);
+}
+
+interface BooleanOptions {
+  on?: number;
+  off?: number;
+  resource?: string;
+}
+
+export function getBoolean(
+  offset: number,
+  options: BooleanOptions = {},
+  dataView?: DataView,
+): boolean {
+  const $dataView = getDataView(dataView);
+
+  const int = getInt(offset, "uint8", {}, $dataView);
+
+  const resource = getResource(options.resource);
+  const resource0 = resource?.[0] as number | undefined;
+  const resource1 = resource?.[1] as number | undefined;
+
+  if (options.resource && resource0 !== undefined && resource1 !== undefined) {
+    if (resource0 === int) {
+      return false;
+    } else if (resource1 === int) {
+      return true;
+    }
+  }
+
+  if (options.on !== undefined && options.on === int) {
+    return true;
+  } else if (options.off !== undefined) {
+    return false;
+  }
+
+  return Boolean(int);
+}
+
+export function setBoolean(
+  offset: number,
+  value: boolean,
+  options: BooleanOptions = {},
+  dataViewAltKey = "",
+): void {
+  const resource = getResource(options.resource);
+  const resource0 = resource?.[0] as number | undefined;
+  const resource1 = resource?.[1] as number | undefined;
+
+  if (options.resource && resource0 !== undefined && resource1 !== undefined) {
+    setInt(
+      offset,
+      "uint8",
+      value === true ? resource1 : resource0,
+      {},
+      dataViewAltKey,
+    );
+  } else if (options.on !== undefined && value) {
+    setInt(offset, "uint8", options.on, {}, dataViewAltKey);
+  } else if (options.off !== undefined && !value) {
+    setInt(offset, "uint8", options.off, {}, dataViewAltKey);
+  } else {
+    setInt(offset, "uint8", value === false ? 0 : 1, {}, dataViewAltKey);
+  }
+}
+
+interface BitflagOptions {
+  reversed?: boolean;
+}
+
+export function getBitflags(
+  offset: number,
+  options: BitflagOptions = {},
+  dataView?: DataView,
+): boolean[] {
+  const $dataView = getDataView(dataView);
+
+  const trueString = options.reversed ? "0" : "1";
+
+  const bitflags = (getInt(offset, "uint8", {}, $dataView) >>> 0x0)
+    .toBinary()
+    .split("")
+    .map((bit) => bit === trueString)
+    .reverse();
+
+  return bitflags;
+}
+
+export function getBitflag(
+  offset: number,
+  flag: number,
+  options: BitflagOptions = {},
+  dataView?: DataView,
+): boolean {
+  const bitflags = getBitflags(offset, options, dataView);
+
+  return bitflags[flag];
+}
+
+export function setBitflag(
+  offset: number,
+  bit: number,
+  value: boolean,
+  options: BitflagOptions = {},
+  dataViewAltKey = "",
+): void {
+  let $dataView = get(dataView);
+  const $dataViewAlt = get(dataViewAlt);
+
+  if (isDataViewAltExists(dataViewAltKey)) {
+    $dataView = $dataViewAlt[dataViewAltKey];
+  }
+
+  const bitflag = getBitflags(
+    offset,
+    { reversed: options.reversed },
+    $dataView,
+  );
+
+  bitflag[bit] = Boolean(value);
+
+  const falseString = options.reversed ? "1" : "0";
+  const trueString = options.reversed ? "0" : "1";
+
+  const binary = parseInt(
+    bitflag
+      .map((t: boolean) => (t ? trueString : falseString))
+      .reverse()
+      .join(""),
+    2,
+  );
+
+  setInt(offset, "uint8", binary, {}, dataViewAltKey);
+}
+
+export function checkNextHiddenFlags(
+  flag: ItemBitflag,
+  bitflags: ItemBitflags,
+  count = 1,
+): void {
+  if (flag.hidden) {
+    return;
+  }
+
+  const checked = getInt(flag.offset, "bit", { bit: flag.bit });
+
+  const index = bitflags.flags.findIndex(
+    (item) => item.offset === flag.offset && item.bit === flag.bit,
+  );
+
+  for (let i = 1; i < count + 1; i += 1) {
+    const flag = bitflags.flags[index + i];
+
+    if (!flag || !flag.hidden) {
+      break;
+    }
+
+    setInt(flag.offset, "bit", checked, { bit: flag.bit });
+  }
+}
+
+interface IntOptions {
+  bigEndian?: boolean;
+  binary?: Binary;
+  binaryCodedDecimal?: boolean;
+  bit?: number;
+  operations?: IntOperation[];
+}
+
+export function getInt(
+  offset: number,
+  dataType: Exclude<DataType, "boolean" | "int64" | "uint64" | "string">,
+  options: IntOptions = {},
+  dataView?: DataView,
+): number {
+  const $dataView = getDataView(dataView);
+
+  if (offset < 0x0) {
+    debug.error("Tried to read a negative offset.");
+    return 0x0;
+  } else if (
+    $dataView.byteLength === 0 ||
+    offset + dataTypeToLength(dataType) - 1 > $dataView.byteLength - 1
+  ) {
+    debug.error(
+      `Tried to read bytes past the end of a buffer at offset 0x${offset.toHex()} of 0x${$dataView.byteLength.toHex()}.`,
+    );
+    return 0x0;
+  }
+
+  let int = 0;
+
+  switch (dataType) {
+    case "bit":
+      int = $dataView.getBit(offset, options.bit || 0);
+      break;
+    case "lower4":
+      int = $dataView.getLower4(offset);
+      break;
+    case "upper4":
+      int = $dataView.getUpper4(offset);
+      break;
+    case "int8":
+      int = $dataView.getInt8(offset);
+      break;
+    case "uint8":
+      int = $dataView.getUint8(offset);
+      break;
+    case "int16":
+      int = $dataView.getInt16(offset, !options.bigEndian);
+      break;
+    case "uint16":
+      int = $dataView.getUint16(offset, !options.bigEndian);
+      break;
+    case "int24":
+      int = $dataView.getInt24(offset, !options.bigEndian);
+      break;
+    case "uint24":
+      int = $dataView.getUint24(offset, !options.bigEndian);
+      break;
+    case "int32":
+      int = $dataView.getInt32(offset, !options.bigEndian);
+      break;
+    case "uint32":
+      int = $dataView.getUint32(offset, !options.bigEndian);
+      break;
+    case "float32":
+      int = $dataView.getFloat32(offset, !options.bigEndian);
+      break;
+  }
+
+  if (options.binary) {
+    int = extractBinary(int, options.binary.bitStart, options.binary.bitLength);
+  }
+
+  if (options.binaryCodedDecimal) {
+    const hex = int.toHex(dataTypeToLength(dataType) * 2);
+
+    int = parseInt(hex);
+  }
+
+  if (options.operations) {
+    int = makeOperations(int, options.operations);
+  }
+
+  return int;
+}
+
+export function setInt(
+  offset: number,
+  dataType: Exclude<DataType, "boolean" | "int64" | "uint64" | "string">,
+  value: number | string,
+  options: IntOptions = {},
+  dataViewAltKey = "",
+): void {
+  let $dataView = get(dataView);
+  const $dataViewAlt = get(dataViewAlt);
+  const $dataViewAltMetas = get(dataViewAltMetas);
+  const $isDebug = get(isDebug);
+
+  if (isDataViewAltExists(dataViewAltKey)) {
+    $dataView = $dataViewAlt[dataViewAltKey];
+  }
+
+  if (offset < 0x0) {
+    debug.error("Tried to write to a negative offset.");
+    return;
+  } else if (
+    $dataView.byteLength === 0 ||
+    offset + dataTypeToLength(dataType) - 1 > $dataView.byteLength - 1
+  ) {
+    debug.error(
+      `Tried to write bytes past the end of a buffer at offset 0x${offset.toHex()} of 0x${$dataView.byteLength.toHex()}.`,
+    );
+    return;
+  }
+
+  if (typeof value === "string") {
+    value = parseFloat(value) || 0;
+  }
+
+  if (options.operations) {
+    value = makeOperations(value, options.operations, true);
+  }
+
+  // prettier-ignore
+  if (isPartial(options.operations)) {
+    const oldValue = getInt(offset, dataType, {
+      bigEndian: options.bigEndian,
+      binary: options.binary,
+      binaryCodedDecimal: options.binaryCodedDecimal,
+    }, $dataView);
+
+    value = getPartialValue(oldValue, value, options.operations!);
+  }
+
+  if (options.binary) {
+    const { bitStart, bitLength } = options.binary;
+
+    // prettier-ignore
+    const int = getInt(offset, dataType, {
+      bigEndian: options.bigEndian,
+    }, $dataView);
+
+    value = injectBinary(int, value, dataType, bitStart, bitLength);
+  }
+
+  if (options.binaryCodedDecimal) {
+    const hex = value.toString().padStart(dataTypeToLength(dataType) * 2, "0");
+
+    value = parseInt(hex, 16);
+  }
+
+  switch (dataType) {
+    case "bit":
+      $dataView.setBit(offset, options.bit || 0, value);
+      break;
+    case "lower4":
+      $dataView.setLower4(offset, value);
+      break;
+    case "upper4":
+      $dataView.setUpper4(offset, value);
+      break;
+    case "int8":
+      $dataView.setInt8(offset, value);
+      break;
+    case "uint8":
+      $dataView.setUint8(offset, value);
+      break;
+    case "int16":
+      $dataView.setInt16(offset, value, !options.bigEndian);
+      break;
+    case "uint16":
+      $dataView.setUint16(offset, value, !options.bigEndian);
+      break;
+    case "int24":
+      $dataView.setInt24(offset, value, !options.bigEndian);
+      break;
+    case "uint24":
+      $dataView.setUint24(offset, value, !options.bigEndian);
+      break;
+    case "int32":
+      $dataView.setInt32(offset, value, !options.bigEndian);
+      break;
+    case "uint32":
+      $dataView.setUint32(offset, value, !options.bigEndian);
+      break;
+    case "float32":
+      $dataView.setFloat32(offset, value, !options.bigEndian);
+      break;
+  }
+
+  if (isDataViewAltExists(dataViewAltKey)) {
+    dataViewAlt.set({
+      ...$dataViewAlt,
+      [dataViewAltKey]: $dataView,
+    });
+
+    if (!$dataViewAltMetas[dataViewAltKey]) {
+      $dataViewAltMetas[dataViewAltKey] = {};
+    }
+
+    if (utilsExists("generatePatch")) {
+      if (!$dataViewAltMetas[dataViewAltKey].patch) {
+        $dataViewAltMetas[dataViewAltKey].patch = {};
+      }
+
+      const dataTypeLength = dataTypeToLength(dataType);
+
+      for (let i = 0x0; i < dataTypeLength; i += 0x1) {
+        const mutliplier = options.bigEndian ? dataTypeLength - 1 - i : i;
+        const int = (value >>> (mutliplier * 0x8)) & 0xff;
+
+        $dataViewAltMetas[dataViewAltKey]!.patch![offset + i] = int;
+      }
+    }
+
+    $dataViewAltMetas[dataViewAltKey].isDirty = true;
+  } else {
+    dataView.set($dataView);
+  }
+
+  if (!$isDebug) {
+    isDirty.set(true);
+  }
+}
+
+interface BigIntOptions {
+  bigEndian?: boolean;
+}
+
+export function getBigInt(
+  offset: number,
+  dataType: "int64" | "uint64",
+  options: BigIntOptions = {},
+  dataView?: DataView,
+): bigint {
+  const $dataView = getDataView(dataView);
+
+  if (offset < 0x0) {
+    debug.error("Tried to read a negative offset.");
+    return BigInt(0x0);
+  } else if (
+    $dataView.byteLength === 0 ||
+    offset + dataTypeToLength(dataType) - 1 > $dataView.byteLength - 1
+  ) {
+    debug.error(
+      `Tried to read bytes past the end of a buffer at offset 0x${offset.toHex()} of 0x${$dataView.byteLength.toHex()}.`,
+    );
+    return BigInt(0x0);
+  }
+
+  let int = BigInt(0x0);
+
+  switch (dataType) {
+    case "int64":
+      int = $dataView.getBigInt64(offset, !options.bigEndian);
+      break;
+    case "uint64":
+      int = $dataView.getBigUint64(offset, !options.bigEndian);
+      break;
+  }
+
+  return int;
+}
+
+export function setBigInt(
+  offset: number,
+  dataType: "int64" | "uint64",
+  value: bigint | string,
+  options: BigIntOptions = {},
+  dataViewAltKey = "",
+): void {
+  let $dataView = get(dataView);
+  const $dataViewAlt = get(dataViewAlt);
+  const $dataViewAltMetas = get(dataViewAltMetas);
+  const $isDebug = get(isDebug);
+
+  if (isDataViewAltExists(dataViewAltKey)) {
+    $dataView = $dataViewAlt[dataViewAltKey];
+  }
+
+  if (offset < 0x0) {
+    debug.error("Tried to write to a negative offset.");
+    return;
+  } else if (
+    $dataView.byteLength === 0 ||
+    offset + dataTypeToLength(dataType) - 1 > $dataView.byteLength - 1
+  ) {
+    debug.error(
+      `Tried to write bytes past the end of a buffer at offset 0x${offset.toHex()} of 0x${$dataView.byteLength.toHex()}.`,
+    );
+    return;
+  }
+
+  if (typeof value === "string") {
+    value = BigInt(value || 0);
+  }
+
+  switch (dataType) {
+    case "int64":
+      $dataView.setBigInt64(offset, value, !options.bigEndian);
+      break;
+    case "uint64":
+      $dataView.setBigUint64(offset, value, !options.bigEndian);
+      break;
+  }
+
+  if (isDataViewAltExists(dataViewAltKey)) {
+    dataViewAlt.set({
+      ...$dataViewAlt,
+      [dataViewAltKey]: $dataView,
+    });
+
+    if (!$dataViewAltMetas[dataViewAltKey]) {
+      $dataViewAltMetas[dataViewAltKey] = {};
+    }
+
+    $dataViewAltMetas[dataViewAltKey].isDirty = true;
+  } else {
+    dataView.set($dataView);
+  }
+
+  if (!$isDebug) {
+    isDirty.set(true);
+  }
+}
+
+interface StringOptions {
+  bigEndian?: boolean;
+  letterBigEndian?: boolean;
+  letterIsAdaptive?: boolean;
+  encoding?: StringEncoding;
+  endCode?: number;
+  regex?: string;
+  resource?: string;
+}
+
+export function getString(
+  offset: number,
+  length: number,
+  letterDataType: "uint8" | "uint16" | "uint24" | "uint32",
+  options: StringOptions = {},
+  dataView?: DataView,
+): string {
+  const $dataView = getDataView(dataView);
+
+  const increment = dataTypeToLength(letterDataType);
+
+  const lengthMax = $dataView.byteLength;
+
+  if (length === -1) {
+    length = lengthMax;
+  }
+
+  let string = "";
+
+  for (
+    let i = offset;
+    i < Math.min(offset + length, lengthMax);
+    i += increment
+  ) {
+    const code = getInt(i, letterDataType, { bigEndian: options.letterBigEndian }, $dataView); // prettier-ignore
+
+    if (options.endCode !== undefined && options.endCode === code) {
+      break;
+    }
+
+    const resource = getResource(options.resource);
+
+    if (resource) {
+      let char = resource[code];
+
+      if (options.letterIsAdaptive) {
+        const code16 = getInt(i, "uint16", { bigEndian: true }, $dataView); // prettier-ignore
+
+        if (resource[code16]) {
+          char = resource[code16];
+          i += 0x1;
+          length += 0x1;
+        }
+      }
+
+      string += char !== undefined ? char : " ";
+    } else if (code === 0x0) {
+      string += " ";
+    } else if (options.encoding) {
+      const code16 = getInt(i, "uint16", { bigEndian: isCharBigEndian(options.encoding) }, $dataView); // prettier-ignore
+
+      if (isCharUint16(code16, options.encoding)) {
+        string += decodeChar(code16, options.encoding);
+        i += 0x1;
+
+        if (options.encoding === "shiftJis") {
+          length += 0x1;
+        }
+      } else {
+        string += decodeChar(code, options.encoding);
+      }
+    } else {
+      string += String.fromCharCode(code);
+    }
+  }
+
+  if (options.bigEndian) {
+    string = string.reverse();
+  }
+
+  return string;
+}
+
+export function setString(
+  offset: number,
+  length: number,
+  letterDataType: "uint8" | "uint16" | "uint24" | "uint32",
+  value: string,
+  fallback = 0x0,
+  options: StringOptions = {},
+  dataViewAltKey = "",
+): void {
+  const increment = dataTypeToLength(letterDataType);
+
+  if (options.bigEndian) {
+    value = value.reverse();
+  }
+
+  let skip = 0x0;
+
+  for (let i = offset; i < offset + length; i += increment) {
+    const char = value[(i - offset) / increment];
+
+    if (char === undefined && options.endCode !== undefined) {
+      // prettier-ignore
+      setInt(i - skip, letterDataType, options.endCode, {
+        bigEndian: options.letterBigEndian,
+      }, dataViewAltKey);
+
+      break;
+    }
+
+    const resource = getResource(options.resource);
+
+    let code = fallback;
+
+    if (char !== undefined) {
+      const charCase = char === char.toLowerCase() ? "lower" : "upper";
+
+      let charAltCase =
+        charCase === "lower" ? char.toUpperCase() : char.toLowerCase();
+
+      if (char.match(/[0-9]/)) {
+        charAltCase = String.fromCharCode(char.charCodeAt(0) + 0xfee0);
+      } else if (char.match(/[\uff10-\uff19]/)) {
+        charAltCase = String.fromCharCode(char.charCodeAt(0) - 0xfee0);
+      }
+
+      const chars = [char, charAltCase];
+
+      chars.some((char) => {
+        if (resource) {
+          const characters = Object.values(resource);
+
+          const index = characters.findIndex((character) => character === char);
+
+          if (index !== -1) {
+            code = parseInt(getObjKey(resource, index));
+          }
+        } else if (!options.regex || char.match(new RegExp(options.regex))) {
+          if (options.encoding) {
+            code = encodeChar(char, options.encoding);
+          } else {
+            code = char.charCodeAt(0);
+          }
+        }
+
+        if (code !== fallback) {
+          return true;
+        }
+      });
+    }
+
+    // prettier-ignore
+    if (options.endCode !== undefined && options.endCode === code) {
+      skip += 0x1;
+    } else if (options.letterIsAdaptive && code > 0xff) {
+      setInt(i - skip, 'uint16', code, {
+        bigEndian: true,
+      }, dataViewAltKey);
+
+      length += 0x1;
+      skip -= 0x1;
+    } else if (options.encoding && isCharUint16(code, options.encoding)) {
+      setInt(i - skip, 'uint16', code, {
+        bigEndian: isCharBigEndian(options.encoding),
+      }, dataViewAltKey);
+
+      length += 0x1;
+      skip -= 0x1;
+    } else {
+      setInt(i - skip, letterDataType, code, {
+        bigEndian: options.letterBigEndian,
+      }, dataViewAltKey);
+    }
+  }
+}
+
+export function getIntFromArray(
+  array: number[] | Uint8Array,
+  offset: number,
+  dataType: DataTypeInt | DataTypeUInt,
+  bigEndian = false,
+): number {
+  const littleEndian16 = [0, 1];
+  const bigEndian16 = [1, 0];
+
+  const littleEndian24 = [0, 1, 2];
+  const bigEndian24 = [2, 1, 0];
+
+  const littleEndian32 = [0, 1, 2, 3];
+  const bigEndian32 = [3, 2, 1, 0];
+
+  let order = [];
+
+  let int = array[offset];
+
+  if (dataType === "int8") {
+    int = int & 0x80 ? int ^ -0x100 : int;
+  } else if (["int16", "uint16"].includes(dataType)) {
+    order = bigEndian ? bigEndian16 : littleEndian16;
+
+    const b0 = array[offset + order[0]];
+    const b1 = array[offset + order[1]] << 0x8;
+
+    int = b0 | b1;
+
+    if (dataType === "int16") {
+      int = int & 0x8000 ? int ^ -0x10000 : int;
+    }
+  } else if (["int24", "uint24"].includes(dataType)) {
+    order = bigEndian ? bigEndian24 : littleEndian24;
+
+    const b0 = array[offset + order[0]];
+    const b1 = array[offset + order[1]] << 0x8;
+    const b2 = array[offset + order[2]] << 0x10;
+
+    int = b0 | b1 | b2;
+
+    if (dataType === "int24") {
+      int = int & 0x800000 ? int ^ -0x1000000 : int;
+    }
+  } else if (["int32", "uint32"].includes(dataType)) {
+    order = bigEndian ? bigEndian32 : littleEndian32;
+
+    const b0 = array[offset + order[0]];
+    const b1 = array[offset + order[1]] << 0x8;
+    const b2 = array[offset + order[2]] << 0x10;
+    const b3 = array[offset + order[3]] << 0x18;
+
+    int = b0 | b1 | b2 | b3;
+
+    if (dataType === "int32") {
+      int = int & 0x80000000 ? int ^ -0x100000000 : int;
+    }
+  }
+
+  return int;
+}
+
+export function getIntFromItem(item: ItemInt): number | bigint {
+  const $dataViewAlt = get(dataViewAlt);
+
+  let _dataViewAlt;
+
+  if (isDataViewAltExists(item.dataViewAltKey || "")) {
+    _dataViewAlt = $dataViewAlt[item.dataViewAltKey as string];
+  }
+
+  let value: bigint | number | string = 0;
+
+  // prettier-ignore
+  if (item.jsonPath) {
+    value = getJsonInt(item.jsonPath, { operations: item.operations });
+  } else if (item.dataType !== "int64" && item.dataType !== "uint64") {
+    value = getInt(item.offset, item.dataType, {
+      bigEndian: item.bigEndian,
+      binaryCodedDecimal: item.binaryCodedDecimal,
+      binary: item.binary,
+      bit: item.bit,
+      operations: item.operations,
+    }, _dataViewAlt);
+  } else {
+    value = getBigInt(item.offset, item.dataType, {
+      bigEndian: item.bigEndian,
+    }, _dataViewAlt);
+  }
+
+  return value;
+}
+
+// prettier-ignore
+export function setIntFromItem(
+  item: ItemInt,
+  value: bigint | number | string,
+): void {
+  if (item.jsonPath && typeof value !== "bigint") {
+    setJsonInt(item.jsonPath, item.dataType, value, {
+      operations: item.operations,
+    });
+  } else if (
+    item.dataType !== "int64" &&
+    item.dataType !== "uint64" &&
+    typeof value !== "bigint"
+  ) {
+    setInt(item.offset, item.dataType, value, {
+      bigEndian: item.bigEndian,
+      binaryCodedDecimal: item.binaryCodedDecimal,
+      binary: item.binary,
+      bit: item.bit,
+      operations: item.operations,
+    }, item.dataViewAltKey);
+  } else if (
+    (item.dataType === "int64" || item.dataType === "uint64") &&
+    typeof value === "bigint"
+  ) {
+    setBigInt(item.offset, item.dataType, value, {
+      bigEndian: item.bigEndian,
+    }, item.dataViewAltKey);
+  }
+}
+
+export function intToArray(
+  int: number,
+  dataType: Exclude<DataTypeInt | DataTypeUInt, "int8" | "uint8">,
+  bigEndian = false,
+): number[] {
+  const littleEndian16 = [0x0, 0x8];
+  const bigEndian16 = [0x8, 0x0];
+
+  const littleEndian24 = [0x0, 0x8, 0x10];
+  const bigEndian24 = [0x10, 0x8, 0x0];
+
+  const littleEndian32 = [0x0, 0x8, 0x10, 0x18];
+  const bigEndian32 = [0x18, 0x10, 0x8, 0x0];
+
+  let order = [];
+
+  const array = [];
+
+  if (["int16", "uint16"].includes(dataType)) {
+    order = bigEndian ? bigEndian16 : littleEndian16;
+
+    const b0 = (int >> order[0]) & 0xff;
+    const b1 = (int >> order[1]) & 0xff;
+
+    array.push(b0, b1);
+  } else if (["int24", "uint24"].includes(dataType)) {
+    order = bigEndian ? bigEndian24 : littleEndian24;
+
+    const b0 = (int >> order[0]) & 0xff;
+    const b1 = (int >> order[1]) & 0xff;
+    const b2 = (int >> order[2]) & 0xff;
+
+    array.push(b0, b1, b2);
+  } else if (["int32", "uint32"].includes(dataType)) {
+    order = bigEndian ? bigEndian32 : littleEndian32;
+
+    const b0 = (int >> order[0]) & 0xff;
+    const b1 = (int >> order[1]) & 0xff;
+    const b2 = (int >> order[2]) & 0xff;
+    const b3 = (int >> order[3]) & 0xff;
+
+    array.push(b0, b1, b2, b3);
+  }
+
+  return array;
+}
+
+export function float32ToInt(float: number): number {
+  const tmp = new DataView(new ArrayBuffer(0x4));
+
+  tmp.setFloat32(0x0, float);
+
+  return tmp.getUint32(0x0);
+}
+
+export function stringToArray(
+  string: string,
+  endCode?: number,
+  dataType: "uint8" | "uint16" = "uint8",
+): number[] {
+  const array = [];
+
+  for (let i = 0; i < string.length; i += 1) {
+    if (dataType === "uint8") {
+      array.push(string.charCodeAt(i));
+    } else if (dataType === "uint16") {
+      array.push(string.charCodeAt(i) & 0xff);
+      array.push(string.charCodeAt(i) >> 0x8);
+    }
+  }
+
+  if (endCode !== undefined) {
+    array.push(endCode);
+  }
+
+  return array;
+}

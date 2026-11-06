@@ -1,0 +1,26 @@
+{
+  "2": {
+    "characterId": 2,
+    "name": "欧修缇",
+    "fieldCommandType": 16,
+    "commandName": "收服"
+  },
+  "4": {
+    "characterId": 4,
+    "name": "帕特提欧",
+    "fieldCommandType": 7,
+    "commandName": "雇佣"
+  },
+  "5": {
+    "characterId": 5,
+    "name": "提米诺斯",
+    "fieldCommandType": 10,
+    "commandName": "引导"
+  },
+  "8": {
+    "characterId": 8,
+    "name": "爱格妮娅",
+    "fieldCommandType": 5,
+    "commandName": "诱惑"
+  }
+}

@@ -1,0 +1,18 @@
+[
+  {
+    "id": "octopath-traveler-ii",
+    "name": "Octopath Traveler II",
+    "platformIds": [
+      "switch",
+      "steam"
+    ],
+    "tools": {
+      "saveEditor": {
+        "createdAt": "2025-11-15",
+        "regions": [
+          "🏳️"
+        ]
+      }
+    }
+  }
+]

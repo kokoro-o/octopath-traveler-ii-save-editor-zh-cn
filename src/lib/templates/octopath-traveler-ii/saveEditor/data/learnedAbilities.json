@@ -1,0 +1,1339 @@
+{
+  "1000": {
+    "name": "移动封印",
+    "abilitySetId": 1000,
+    "spCost": 12,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用长枪对敌方单体造成伤害，\n并施加行动速度下降\n的效果3回合。"
+  },
+  "1001": {
+    "name": "八字斩",
+    "abilitySetId": 1001,
+    "spCost": 9,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用剑对敌方单体造成中等伤害。"
+  },
+  "1007": {
+    "name": "投掷酒瓶",
+    "abilitySetId": 1007,
+    "spCost": 13,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "对敌方单体造成无属性伤害，\n并有一定几率施加混乱效果2回合。"
+  },
+  "1009": {
+    "name": "投掷匕首",
+    "abilitySetId": 1009,
+    "spCost": 9,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用短剑对敌方单体造成中等伤害。"
+  },
+  "1011": {
+    "name": "挥舞",
+    "abilitySetId": 1011,
+    "spCost": 15,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用斧头对敌方全体造成伤害。"
+  },
+  "1016": {
+    "name": "箭雨",
+    "abilitySetId": 1016,
+    "spCost": 15,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用弓对敌方全体造成伤害。"
+  },
+  "1018": {
+    "name": "二连斩",
+    "abilitySetId": 1018,
+    "spCost": 6,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用剑对敌方单体造成2次伤害。"
+  },
+  "1062": {
+    "name": "双刀天斩",
+    "abilitySetId": 1062,
+    "spCost": 20,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用剑对敌方全体造成2次伤害。"
+  },
+  "1063": {
+    "name": "悲哀的安魂曲",
+    "abilitySetId": 1063,
+    "spCost": 15,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "对敌方全体造成冰属性伤害，\n并有一定几率施加睡眠效果3回合。"
+  },
+  "1067": {
+    "name": "飞斧",
+    "abilitySetId": 1067,
+    "spCost": 23,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用斧头对敌方全体造成2次伤害。"
+  },
+  "1077": {
+    "name": "顺手牵羊",
+    "abilitySetId": 1077,
+    "spCost": 12,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用短剑对敌方单体造成伤害，\n并夺取伤害值20%的叶币。"
+  },
+  "1088": {
+    "name": "驱逐之枪",
+    "abilitySetId": 1088,
+    "spCost": 23,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用长枪对敌方单体造成伤害，\n且将其行动顺序移到最后。"
+  },
+  "1098": {
+    "name": "打盹儿",
+    "abilitySetId": 1098,
+    "spCost": 2,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "赋予自身睡眠效果2回合，\n并恢复最大HP的50%。"
+  },
+  "1102": {
+    "name": "击斩",
+    "abilitySetId": 1102,
+    "spCost": 8,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用剑对敌方单体造成伤害。"
+  },
+  "1103": {
+    "name": "猛击",
+    "abilitySetId": 1103,
+    "spCost": 8,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用短剑对敌方单体造成伤害。"
+  },
+  "1104": {
+    "name": "突刺",
+    "abilitySetId": 1104,
+    "spCost": 8,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用长枪对敌方单体造成伤害。"
+  },
+  "1105": {
+    "name": "切断",
+    "abilitySetId": 1105,
+    "spCost": 8,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用斧头对敌方单体造成伤害。"
+  },
+  "1106": {
+    "name": "射穿",
+    "abilitySetId": 1106,
+    "spCost": 8,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用弓对敌方单体造成伤害。"
+  },
+  "1107": {
+    "name": "殴打",
+    "abilitySetId": 1107,
+    "spCost": 8,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用杖对敌方单体造成伤害。"
+  },
+  "1108": {
+    "name": "一刀两断",
+    "abilitySetId": 1108,
+    "spCost": 15,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用剑对敌方单体造成中等伤害。"
+  },
+  "1109": {
+    "name": "二连刺",
+    "abilitySetId": 1109,
+    "spCost": 10,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用短剑对敌方单体造成2次伤害。"
+  },
+  "1110": {
+    "name": "二段突刺",
+    "abilitySetId": 1110,
+    "spCost": 10,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用长枪对敌方单体造成2次伤害。"
+  },
+  "1111": {
+    "name": "碎冰",
+    "abilitySetId": 1111,
+    "spCost": 15,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用斧头对敌方单体造成中等伤害。"
+  },
+  "1112": {
+    "name": "强弓",
+    "abilitySetId": 1112,
+    "spCost": 15,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用弓对敌方单体造成中等伤害。"
+  },
+  "1113": {
+    "name": "天灵击",
+    "abilitySetId": 1113,
+    "spCost": 15,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用杖对敌方单体造成中等伤害。"
+  },
+  "1114": {
+    "name": "一字斩",
+    "abilitySetId": 1114,
+    "spCost": 25,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用剑对敌方全体造成大量伤害。"
+  },
+  "1115": {
+    "name": "千手之刃",
+    "abilitySetId": 1115,
+    "spCost": 16,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用短剑对随机目标\n造成3～5次伤害。"
+  },
+  "1116": {
+    "name": "双龙",
+    "abilitySetId": 1116,
+    "spCost": 19,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用长枪对敌方全体造成2次伤害。"
+  },
+  "1117": {
+    "name": "翻天覆地",
+    "abilitySetId": 1117,
+    "spCost": 25,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用斧头对敌方全体造成大量伤害。"
+  },
+  "1118": {
+    "name": "村雨箭",
+    "abilitySetId": 1118,
+    "spCost": 22,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用弓对敌方全体\n造成3～5次伤害。"
+  },
+  "1119": {
+    "name": "破坏槌",
+    "abilitySetId": 1119,
+    "spCost": 25,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用杖对敌方全体造成大量伤害。"
+  },
+  "1120": {
+    "name": "燃烧",
+    "abilitySetId": 1120,
+    "spCost": 8,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "对敌方单体造成火属性伤害。"
+  },
+  "1121": {
+    "name": "冰冻",
+    "abilitySetId": 1121,
+    "spCost": 8,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "对敌方单体造成冰属性伤害。"
+  },
+  "1122": {
+    "name": "落雷",
+    "abilitySetId": 1122,
+    "spCost": 8,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "对敌方单体造成雷属性伤害。"
+  },
+  "1123": {
+    "name": "风切",
+    "abilitySetId": 1123,
+    "spCost": 8,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "对敌方单体造成风属性伤害。"
+  },
+  "1124": {
+    "name": "闪光",
+    "abilitySetId": 1124,
+    "spCost": 8,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "对敌方单体造成光属性伤害。"
+  },
+  "1125": {
+    "name": "暗击",
+    "abilitySetId": 1125,
+    "spCost": 8,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "对敌方单体造成暗属性伤害。"
+  },
+  "1126": {
+    "name": "剧毒猛击",
+    "abilitySetId": 1126,
+    "spCost": 12,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用短剑对敌方单体造成伤害，\n并有一定几率施加中毒效果2回合。"
+  },
+  "1127": {
+    "name": "失明猛击",
+    "abilitySetId": 1127,
+    "spCost": 12,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用短剑对敌方单体造成伤害，\n并有一定几率施加黑暗效果2回合。"
+  },
+  "1128": {
+    "name": "恐慌猛击",
+    "abilitySetId": 1128,
+    "spCost": 16,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用短剑对敌方单体造成伤害，\n并有一定几率施加混乱效果2回合。"
+  },
+  "1129": {
+    "name": "睡眠猛击",
+    "abilitySetId": 1129,
+    "spCost": 16,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用短剑对敌方单体造成伤害，\n并有一定几率施加睡眠效果2回合。"
+  },
+  "1130": {
+    "name": "剧毒之矢",
+    "abilitySetId": 1130,
+    "spCost": 12,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用弓对敌方单体造成伤害，\n并有一定几率施加中毒效果2回合。"
+  },
+  "1131": {
+    "name": "失明之矢",
+    "abilitySetId": 1131,
+    "spCost": 12,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用弓对敌方单体造成伤害，\n并有一定几率施加黑暗效果2回合。"
+  },
+  "1132": {
+    "name": "恐慌之矢",
+    "abilitySetId": 1132,
+    "spCost": 16,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用弓对敌方单体造成伤害，\n并有一定几率施加混乱效果2回合。"
+  },
+  "1133": {
+    "name": "睡眠之矢",
+    "abilitySetId": 1133,
+    "spCost": 16,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用弓对敌方单体造成伤害，\n并有一定几率施加睡眠效果2回合。"
+  },
+  "1134": {
+    "name": "疗伤",
+    "abilitySetId": 1134,
+    "spCost": 2,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "恢复自身的HP。"
+  },
+  "1135": {
+    "name": "忍耐",
+    "abilitySetId": 1135,
+    "spCost": 6,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "赋予自身物防/属防上升\n的效果1回合。"
+  },
+  "1136": {
+    "name": "祈祷",
+    "abilitySetId": 1136,
+    "spCost": 6,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "赋予自身属防上升\n的效果3回合。"
+  },
+  "1137": {
+    "name": "闪避",
+    "abilitySetId": 1137,
+    "spCost": 6,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "赋予自身回避上升\n的效果3回合。"
+  },
+  "1138": {
+    "name": "喝倒彩",
+    "abilitySetId": 1138,
+    "spCost": 6,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "对敌方单体施加物攻下降\n的效果3回合。"
+  },
+  "1139": {
+    "name": "诅咒",
+    "abilitySetId": 1139,
+    "spCost": 6,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "对敌方单体施加属攻下降\n的效果3回合。"
+  },
+  "1140": {
+    "name": "集中精力",
+    "abilitySetId": 1140,
+    "spCost": 6,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "赋予自身属攻上升\n的效果3回合。"
+  },
+  "1141": {
+    "name": "冥想",
+    "abilitySetId": 1141,
+    "spCost": 1,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "恢复自身最大SP的10%。"
+  },
+  "1142": {
+    "name": "精神统一",
+    "abilitySetId": 1142,
+    "spCost": 12,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "赋予自身属攻/属防上升\n的效果3回合。"
+  },
+  "1143": {
+    "name": "醉剑",
+    "abilitySetId": 1143,
+    "spCost": 16,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用剑对随机目标\n造成5～10次伤害。\n但不容易命中。"
+  },
+  "1144": {
+    "name": "近前刺击",
+    "abilitySetId": 1144,
+    "spCost": 30,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用短剑对敌方单体造成中等伤害，\n且必定为暴击攻击。"
+  },
+  "1145": {
+    "name": "切成三片",
+    "abilitySetId": 1145,
+    "spCost": 12,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用短剑对敌方单体造成3次伤害。"
+  },
+  "1146": {
+    "name": "暗杀术：致命之牙",
+    "abilitySetId": 1146,
+    "spCost": 30,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用短剑对随机目标\n造成4～8次伤害，\n并有一定几率施加中毒效果2回合。"
+  },
+  "1147": {
+    "name": "满载突刺",
+    "abilitySetId": 1147,
+    "spCost": 16,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用长枪对随机目标\n造成3～5次伤害。"
+  },
+  "1148": {
+    "name": "大木采伐",
+    "abilitySetId": 1148,
+    "spCost": 25,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用斧头对敌方全体造成伤害。"
+  },
+  "1149": {
+    "name": "劈柴",
+    "abilitySetId": 1149,
+    "spCost": 19,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用斧头对敌方单体造成2次伤害。"
+  },
+  "1150": {
+    "name": "耕地",
+    "abilitySetId": 1150,
+    "spCost": 15,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用斧头对敌方单体造成2次伤害，\n并赋予自身行动速度上升\n的效果3回合。"
+  },
+  "1151": {
+    "name": "被褥掸子",
+    "abilitySetId": 1151,
+    "spCost": 12,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用杖对敌方单体造成3次伤害。"
+  },
+  "1152": {
+    "name": "调教",
+    "abilitySetId": 1152,
+    "spCost": 12,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用杖对敌方单体造成伤害，\n并施加物攻下降的效果3回合。"
+  },
+  "1153": {
+    "name": "圣火的治愈",
+    "abilitySetId": 1153,
+    "spCost": 12,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "赋予自身行动后恢复HP\n的效果3回合。"
+  },
+  "1154": {
+    "name": "巧手改衣",
+    "abilitySetId": 1154,
+    "spCost": 15,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "赋予我方单体物防/行动速度上升\n的效果2回合。"
+  },
+  "1155": {
+    "name": "圣典的教义",
+    "abilitySetId": 1155,
+    "spCost": 15,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "赋予自身的武器光属性追击\n的效果3回合。"
+  },
+  "1157": {
+    "name": "猛击",
+    "abilitySetId": 1157,
+    "spCost": 10,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "对敌方单体施加黑暗效果2回合。"
+  },
+  "1158": {
+    "name": "身体不适",
+    "abilitySetId": 1158,
+    "spCost": 0,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "对自身施加物攻/属攻下降\n的效果3回合。"
+  },
+  "1159": {
+    "name": "腰痛",
+    "abilitySetId": 1159,
+    "spCost": 0,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "对自身施加回避/行动速度下降\n的效果3回合。"
+  },
+  "1160": {
+    "name": "回旋踢",
+    "abilitySetId": 1160,
+    "spCost": 30,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "对敌方单体造成物理伤害，\n并有一定几率施加混乱效果3回合。"
+  },
+  "1161": {
+    "name": "召魔",
+    "abilitySetId": 1161,
+    "spCost": 25,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "从各种魔物中召唤1只到战斗中。"
+  },
+  "1162": {
+    "name": "随心吟唱",
+    "abilitySetId": 1162,
+    "spCost": 8,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "对敌方单体造成火属性伤害，\n并有一定几率造成大量伤害。"
+  },
+  "1163": {
+    "name": "超级调查",
+    "abilitySetId": 1163,
+    "spCost": 6,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "发现敌方单体2个弱点，\n并显示HP。"
+  },
+  "1164": {
+    "name": "索取精灵石",
+    "abilitySetId": 1164,
+    "spCost": 23,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "以火/冰/雷属性的顺序，\n对敌方单体造成3次伤害。"
+  },
+  "1165": {
+    "name": "圣心斩",
+    "abilitySetId": 1165,
+    "spCost": 23,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用剑对敌方单体造成中等伤害，\n并施加属防下降的效果3回合。"
+  },
+  "1169": {
+    "name": "奉献",
+    "abilitySetId": 1169,
+    "spCost": 8,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "恢复敌方单体的HP。"
+  },
+  "1170": {
+    "name": "阵前指挥",
+    "abilitySetId": 1170,
+    "spCost": 20,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "赋予我方全体物攻上升\n的效果1回合。"
+  },
+  "1172": {
+    "name": "放手一搏",
+    "abilitySetId": 1172,
+    "spCost": 15,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "赋予我方单体所有属性上升\n的效果2回合，\n并对自身施加所有属性下降\n的效果2回合。"
+  },
+  "1173": {
+    "name": "黄金之右",
+    "abilitySetId": 1173,
+    "spCost": 60,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "对敌方单体造成大量物理伤害，\n无视弱点，削弱2点护盾点数。"
+  },
+  "1177": {
+    "name": "痛殴",
+    "abilitySetId": 1177,
+    "spCost": 15,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "对敌方单体造成中等物理伤害。"
+  },
+  "1178": {
+    "name": "一剂药",
+    "abilitySetId": 1178,
+    "spCost": 1,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "恢复自身的SP，\n并赋予自身属攻上升的效果3回合。"
+  },
+  "1179": {
+    "name": "凤凰之舞",
+    "abilitySetId": 1179,
+    "spCost": 20,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "赋予我方单体的武器火属性追击和\n属攻上升的效果2回合。"
+  },
+  "1180": {
+    "name": "熟练技工",
+    "abilitySetId": 1180,
+    "spCost": 15,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "赋予我方单体物攻/行动速度上升\n的效果2回合。"
+  },
+  "1181": {
+    "name": "极·新月横扫",
+    "abilitySetId": 1181,
+    "spCost": 45,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用长枪对敌方全体造成特大量伤害。"
+  },
+  "1182": {
+    "name": "商人的观察力",
+    "abilitySetId": 1182,
+    "spCost": 6,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "赋予自身命中上升\n的效果3回合。"
+  },
+  "1183": {
+    "name": "腹痛",
+    "abilitySetId": 1183,
+    "spCost": 0,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "对自身施加物防下降\n的效果3回合。"
+  },
+  "1184": {
+    "name": "治疗好转",
+    "abilitySetId": 1184,
+    "spCost": 8,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "恢复我方单体的HP。"
+  },
+  "1185": {
+    "name": "铁锤乱舞",
+    "abilitySetId": 1185,
+    "spCost": 10,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用斧头对随机目标\n造成3～5次伤害。"
+  },
+  "1187": {
+    "name": "商人的慧眼",
+    "abilitySetId": 1187,
+    "spCost": 15,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "发现敌方单体1个弱点，\n并对其施加物防下降的效果2回合。"
+  },
+  "1188": {
+    "name": "高洁之盾",
+    "abilitySetId": 1188,
+    "spCost": 8,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "掩护我方单体免受攻击1次。"
+  },
+  "1189": {
+    "name": "毒处方",
+    "abilitySetId": 1189,
+    "spCost": 8,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "对敌方单体施加中毒效果2回合。"
+  },
+  "1190": {
+    "name": "去除粘液",
+    "abilitySetId": 1190,
+    "spCost": 8,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "赋予我方单体行动速度上升\n的效果2回合。"
+  },
+  "1191": {
+    "name": "满汉全席",
+    "abilitySetId": 1191,
+    "spCost": 20,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "大量恢复我方单体的HP，\n并赋予其物防/属防上升\n的效果2回合。"
+  },
+  "1192": {
+    "name": "鲁莽猛斩",
+    "abilitySetId": 1192,
+    "spCost": 24,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用剑对敌方单体造成大量伤害，\n但自身也会受到最大HP10%\n的伤害。"
+  },
+  "1193": {
+    "name": "姑息疗法",
+    "abilitySetId": 1193,
+    "spCost": 8,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "消除我方单体1个弱化效果。"
+  },
+  "1194": {
+    "name": "无情之剑",
+    "abilitySetId": 1194,
+    "spCost": 80,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用剑对敌方单体造成\n3000点伤害。"
+  },
+  "1195": {
+    "name": "海龙穿刺",
+    "abilitySetId": 1195,
+    "spCost": 45,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用长枪对敌方单体造成大量伤害，\n并施加黑暗效果3回合。"
+  },
+  "1196": {
+    "name": "一起干杯！",
+    "abilitySetId": 1196,
+    "spCost": 15,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "一定几率对敌方单体以及自身\n施加混乱效果1回合。"
+  },
+  "1197": {
+    "name": "放血之刃",
+    "abilitySetId": 1197,
+    "spCost": 23,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用短剑对敌方单体造成伤害，\n并施加物攻下降的效果3回合。"
+  },
+  "1198": {
+    "name": "表演指导",
+    "abilitySetId": 1198,
+    "spCost": 15,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "恢复我方单体的SP，\n并赋予其物攻上升的效果3回合。"
+  },
+  "1199": {
+    "name": "华丽的闪避",
+    "abilitySetId": 1199,
+    "spCost": 20,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "赋予我方全体回避上升\n的效果1回合。"
+  },
+  "1200": {
+    "name": "毒之晚宴",
+    "abilitySetId": 1200,
+    "spCost": 8,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "恢复我方单体最大SP的50%，\n且对其施加中毒效果3回合。"
+  },
+  "1201": {
+    "name": "暗中捣鬼",
+    "abilitySetId": 1201,
+    "spCost": 8,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "对敌方单体施加物攻下降\n的效果2回合。"
+  },
+  "1202": {
+    "name": "无声遁走",
+    "abilitySetId": 1202,
+    "spCost": 12,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "赋予自身行动速度/回避上升\n的效果3回合。"
+  },
+  "1203": {
+    "name": "死里求生斩",
+    "abilitySetId": 1203,
+    "spCost": 30,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用剑对敌方单体造成大量伤害。\n自身的HP越少，造成的伤害越大。"
+  },
+  "1204": {
+    "name": "古书的教诲",
+    "abilitySetId": 1204,
+    "spCost": 15,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "赋予自身的武器暗之追击\n的效果3回合。"
+  },
+  "1205": {
+    "name": "SP转化",
+    "abilitySetId": 1205,
+    "spCost": 0,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "恢复我方全体最大SP的10%，\n同时自身会受到最大HP10%\n的伤害。"
+  },
+  "1206": {
+    "name": "有罪！！",
+    "abilitySetId": 1206,
+    "spCost": 20,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "对敌方全体施加属攻下降\n的效果1回合。"
+  },
+  "1207": {
+    "name": "黑暗处方",
+    "abilitySetId": 1207,
+    "spCost": 15,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "对敌方单体施加黑暗效果2回合。"
+  },
+  "1208": {
+    "name": "钢铁之神",
+    "abilitySetId": 1208,
+    "spCost": 80,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "无视敌方单体弱点，\n削弱1点护盾点数。"
+  },
+  "1209": {
+    "name": "扔叶币",
+    "abilitySetId": 1209,
+    "spCost": 500,
+    "costType": "EABILITY_COST_TYPE::eMONEY",
+    "description": "消费500叶币，\n对敌方单体造成\n同等于消费叶币的伤害。"
+  },
+  "1210": {
+    "name": "大圣者的神盾",
+    "abilitySetId": 1210,
+    "spCost": 100,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "赋予我方单体不会受到任何攻击\n的效果1回合。"
+  },
+  "1211": {
+    "name": "闪技：蜂巢",
+    "abilitySetId": 1211,
+    "spCost": 45,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "以弓/短剑/长枪的顺序\n对敌方单体造成3次伤害。"
+  },
+  "1212": {
+    "name": "致盲之箭",
+    "abilitySetId": 1212,
+    "spCost": 23,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用弓对敌方单体造成伤害，\n并有一定几率施加黑暗效果3回合。"
+  },
+  "1213": {
+    "name": "恶魔的耳语",
+    "abilitySetId": 1213,
+    "spCost": 20,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "对敌我全体施加\n所有属性下降\n的效果1回合。"
+  },
+  "1214": {
+    "name": "丸子屋秘传-穿刺-",
+    "abilitySetId": 1214,
+    "spCost": 20,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用短剑对随机目标\n造成4～8次伤害。"
+  },
+  "1215": {
+    "name": "貘",
+    "abilitySetId": 1215,
+    "spCost": 40,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用武器对敌方单体造成伤害，\n但使用的武器会坏掉。"
+  },
+  "1216": {
+    "name": "恋爱的甜蜜之味",
+    "abilitySetId": 1216,
+    "spCost": 8,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "使自身以外的我方单体\n恢复1BP。"
+  },
+  "1217": {
+    "name": "猛攻裂断",
+    "abilitySetId": 1217,
+    "spCost": 62,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用斧头对敌方全体造成2次伤害，\n并赋予我方全体物攻上升\n的效果2回合。"
+  },
+  "1218": {
+    "name": "极刑的木槌",
+    "abilitySetId": 1218,
+    "spCost": 60,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用杖对敌方全体造成3次伤害。"
+  },
+  "1219": {
+    "name": "风潇雨晦",
+    "abilitySetId": 1219,
+    "spCost": 30,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用弓对敌方全体\n造成4～8次伤害。"
+  },
+  "1220": {
+    "name": "一掷千金",
+    "abilitySetId": 1220,
+    "spCost": 1000,
+    "costType": "EABILITY_COST_TYPE::eMONEY",
+    "description": "消费1000叶币，\n对敌方单体造成\n同等于消费叶币的伤害。"
+  },
+  "1221": {
+    "name": "商人的天眼",
+    "abilitySetId": 1221,
+    "spCost": 25,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "赋予我方全体物攻上升\n的效果1回合，和必定回避物理攻击\n的效果1次。"
+  },
+  "1222": {
+    "name": "熟睡",
+    "abilitySetId": 1222,
+    "spCost": 2,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "赋予自身睡眠效果4回合，\n并恢复最大HP/SP的50%。"
+  },
+  "1223": {
+    "name": "幻兽穿刺",
+    "abilitySetId": 1223,
+    "spCost": 100,
+    "costType": "EABILITY_COST_TYPE::eMP_RATIO",
+    "description": "消耗全部SP，用长枪对\n敌方单体造成伤害。\n消耗的SP越多，造成的伤害越大。"
+  },
+  "1224": {
+    "name": "黑色冲动",
+    "abilitySetId": 1224,
+    "spCost": 60,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "对敌方全体造成暗属性大量伤害，\n并赋予自身属攻上升\n的效果3回合。"
+  },
+  "1225": {
+    "name": "放血大促销",
+    "abilitySetId": 1225,
+    "spCost": 29,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用短剑对敌方单体造成伤害，\n并造成火属性伤害，\n且施加中毒效果3回合。"
+  },
+  "1226": {
+    "name": "绝地大反击",
+    "abilitySetId": 1226,
+    "spCost": 60,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用杖对敌方单体造成特大量伤害。"
+  },
+  "1227": {
+    "name": "射穿心脏",
+    "abilitySetId": 1227,
+    "spCost": 16,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用弓对敌方单体造成伤害，\n并有一定几率施加混乱效果3回合。"
+  },
+  "1228": {
+    "name": "神速脚",
+    "abilitySetId": 1228,
+    "spCost": 50,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "对敌方全体造成伤害，\n无视弱点，削弱护盾点数，\n并赋予我方全体行动速度上升\n的效果2回合。"
+  },
+  "1229": {
+    "name": "真空斩",
+    "abilitySetId": 1229,
+    "spCost": 30,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用剑对敌方单体造成大量伤害。"
+  },
+  "1230": {
+    "name": "四肢斩",
+    "abilitySetId": 1230,
+    "spCost": 35,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用剑对敌方单体造成4次伤害。"
+  },
+  "1231": {
+    "name": "轮回转生",
+    "abilitySetId": 1231,
+    "spCost": 0,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "使自身以外的我方全体恢复1BP，\n但自身陷入无法战斗的状态。"
+  },
+  "1232": {
+    "name": "开采",
+    "abilitySetId": 1232,
+    "spCost": 10,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用斧头对敌方单体造成2次伤害。"
+  },
+  "1233": {
+    "name": "斗志",
+    "abilitySetId": 1233,
+    "spCost": 12,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "赋予自身物攻/物防上升\n的效果3回合。"
+  },
+  "1234": {
+    "name": "轻快的舞步",
+    "abilitySetId": 1234,
+    "spCost": 6,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "赋予自身行动速度上升\n的效果3回合。"
+  },
+  "1236": {
+    "name": "渔火",
+    "abilitySetId": 1236,
+    "spCost": 15,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "对敌方全体造成火属性伤害。"
+  },
+  "1237": {
+    "name": "鱼叉突刺",
+    "abilitySetId": 1237,
+    "spCost": 15,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用长枪对敌方单体造成中等伤害。"
+  },
+  "1238": {
+    "name": "警戒",
+    "abilitySetId": 1238,
+    "spCost": 12,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "赋予自身物防/属防上升\n的效果3回合。"
+  },
+  "1239": {
+    "name": "狩猎之箭",
+    "abilitySetId": 1239,
+    "spCost": 10,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用弓对敌方单体造成2次伤害。"
+  },
+  "1240": {
+    "name": "扔破烂",
+    "abilitySetId": 1240,
+    "spCost": 12,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "对敌方单体造成物理伤害，\n并施加随机的属性下降\n的效果3回合。"
+  },
+  "1241": {
+    "name": "讲经",
+    "abilitySetId": 1241,
+    "spCost": 16,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用杖对敌方单体造成伤害，\n并有一定几率施加睡眠效果。"
+  },
+  "1242": {
+    "name": "牺牲之光",
+    "abilitySetId": 1242,
+    "spCost": 32,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "对敌方全体造成光属性大量伤害，\n且下一个回合自身无法行动。"
+  },
+  "1243": {
+    "name": "扔雪球",
+    "abilitySetId": 1243,
+    "spCost": 15,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "对敌方全体造成冰属性伤害。"
+  },
+  "1244": {
+    "name": "头枪",
+    "abilitySetId": 1244,
+    "spCost": 12,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用长枪对敌方单体造成伤害，\n且在下一回合可以第一个行动。"
+  },
+  "1245": {
+    "name": "碎基岩",
+    "abilitySetId": 1245,
+    "spCost": 23,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用斧头对敌方单体造成伤害，\n并施加物防下降的效果3回合。"
+  },
+  "1246": {
+    "name": "空洞的眼神",
+    "abilitySetId": 1246,
+    "spCost": 20,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "对敌方全体施加属防下降\n的效果1回合。"
+  },
+  "1247": {
+    "name": "大声激励",
+    "abilitySetId": 1247,
+    "spCost": 20,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "赋予我方全体物攻上升\n的效果1回合。"
+  },
+  "1248": {
+    "name": "欢快之舞",
+    "abilitySetId": 1248,
+    "spCost": 15,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "赋予我方单体物攻/属攻上升\n的效果2回合。"
+  },
+  "1249": {
+    "name": "上钩",
+    "abilitySetId": 1249,
+    "spCost": 32,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用剑对敌方全体造成大量伤害，\n且将自身的行动顺序移到最前。"
+  },
+  "1250": {
+    "name": "云隐",
+    "abilitySetId": 1250,
+    "spCost": 12,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "赋予自身1次必定回避\n物理攻击的效果。"
+  },
+  "1251": {
+    "name": "满身疮痍断",
+    "abilitySetId": 1251,
+    "spCost": 32,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用斧头对敌方全体造成大量伤害，\n并对自身施加物攻下降\n的效果3回合。"
+  },
+  "1252": {
+    "name": "治愈的演算",
+    "abilitySetId": 1252,
+    "spCost": 15,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "恢复我方全体最大HP的10%。"
+  },
+  "1253": {
+    "name": "费神的演算",
+    "abilitySetId": 1253,
+    "spCost": 20,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "赋予我方全体属攻上升\n的效果1回合。"
+  },
+  "1254": {
+    "name": "三属性的演算",
+    "abilitySetId": 1254,
+    "spCost": 38,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "以火/光/暗属性的顺序\n对敌方全体造成3次伤害。"
+  },
+  "1255": {
+    "name": "体力温存",
+    "abilitySetId": 1255,
+    "spCost": 10,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "恢复自身的HP。"
+  },
+  "1256": {
+    "name": "黏着箭",
+    "abilitySetId": 1256,
+    "spCost": 23,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用弓对敌方单体造成伤害，\n并施加行动速度下降\n的效果3回合。"
+  },
+  "1257": {
+    "name": "沉睡的诱惑",
+    "abilitySetId": 1257,
+    "spCost": 15,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "对敌方单体及自身\n施加睡眠效果1回合。"
+  },
+  "1258": {
+    "name": "防护之阵",
+    "abilitySetId": 1258,
+    "spCost": 20,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "赋予我方全体物防上升\n的效果1回合。"
+  },
+  "1259": {
+    "name": "掩护射击",
+    "abilitySetId": 1259,
+    "spCost": 23,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用弓对敌方全体造成伤害，\n并赋予我方全体行动速度上升\n的效果2回合。"
+  },
+  "1260": {
+    "name": "新风",
+    "abilitySetId": 1260,
+    "spCost": 15,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "对敌方全体造成风属性伤害。"
+  },
+  "1261": {
+    "name": "崇高的火焰",
+    "abilitySetId": 1261,
+    "spCost": 23,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "对敌方单体造成3次\n火属性伤害。"
+  },
+  "1262": {
+    "name": "高洁的斩击",
+    "abilitySetId": 1262,
+    "spCost": 23,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用剑对敌方单体造成3次伤害。"
+  },
+  "1263": {
+    "name": "不眠不休",
+    "abilitySetId": 1263,
+    "spCost": 15,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "恢复自身的HP。\n且可在回合的最后\n再行动一次。\n※追加行动的效果无法扩散。"
+  },
+  "1264": {
+    "name": "喋喋不休",
+    "abilitySetId": 1264,
+    "spCost": 15,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "对敌方单体施加混乱效果1回合。"
+  },
+  "1265": {
+    "name": "四分五裂",
+    "abilitySetId": 1265,
+    "spCost": 10,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "对自身施加最大HP25%的伤害。"
+  },
+  "1266": {
+    "name": "精彩时刻！",
+    "abilitySetId": 1266,
+    "spCost": 20,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "赋予我方全体随机属性上升\n的效果2回合。"
+  },
+  "1267": {
+    "name": "热情",
+    "abilitySetId": 1267,
+    "spCost": 15,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "对敌方全体造成雷属性伤害。"
+  },
+  "1268": {
+    "name": "制裁的炼狱",
+    "abilitySetId": 1268,
+    "spCost": 40,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "对敌方全体造成火属性大量伤害。"
+  },
+  "1269": {
+    "name": "冰冻幽闭",
+    "abilitySetId": 1269,
+    "spCost": 23,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "对敌方单体造成冰属性伤害，\n并施加属攻下降的效果3回合。"
+  },
+  "1270": {
+    "name": "雷家的荣誉",
+    "abilitySetId": 1270,
+    "spCost": 12,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "赋予自身物攻/行动速度上升\n的效果3回合。"
+  },
+  "1271": {
+    "name": "迅雷一闪",
+    "abilitySetId": 1271,
+    "spCost": 31,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用长枪对敌方全体造成中等伤害，\n且造成雷属性伤害。"
+  },
+  "1272": {
+    "name": "鬼神斩",
+    "abilitySetId": 1272,
+    "spCost": 35,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用剑对敌方单体造成3次伤害，\n并赋予自身物攻上升\n的效果3回合。"
+  },
+  "1273": {
+    "name": "人鱼之舞",
+    "abilitySetId": 1273,
+    "spCost": 12,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "赋予我方单体行动后恢复SP\n的效果2回合。"
+  },
+  "1274": {
+    "name": "上吧！加耐特！",
+    "abilitySetId": 1274,
+    "spCost": 20,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "看门狗加耐特对敌方全体\n造成伤害。"
+  },
+  "1275": {
+    "name": "踏月",
+    "abilitySetId": 1275,
+    "spCost": 20,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "赋予自身属攻/回避/行动速度上升\n的效果3回合。"
+  },
+  "1276": {
+    "name": "踢飞",
+    "abilitySetId": 1276,
+    "spCost": 23,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "对敌方单体造成中等物理伤害，\n且将行动顺序向后移1个。"
+  },
+  "1277": {
+    "name": "猛攻一点",
+    "abilitySetId": 1277,
+    "spCost": 20,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "将对敌方单体造成的伤害\n全部变为暴击，\n持续1回合。"
+  },
+  "1278": {
+    "name": "金光夺目",
+    "abilitySetId": 1278,
+    "spCost": 30,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "对敌方全体造成光属性伤害，\n并有一定几率施加混乱效果3回合。"
+  },
+  "1279": {
+    "name": "毒鱼叉",
+    "abilitySetId": 1279,
+    "spCost": 23,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用长枪对敌方单体造成中等伤害，\n并施加中毒效果3回合。"
+  },
+  "1280": {
+    "name": "请饶我一命！",
+    "abilitySetId": 1280,
+    "spCost": 500,
+    "costType": "EABILITY_COST_TYPE::eMONEY",
+    "description": "消费500叶币，对敌方单体施加\n物攻/属攻/行动速度下降\n的效果2回合。"
+  },
+  "1281": {
+    "name": "一局定胜负！！",
+    "abilitySetId": 1281,
+    "spCost": 20,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "赋予我方全体物攻/属攻上升\n的效果和物防/属防下降\n的效果2回合。"
+  },
+  "1285": {
+    "name": "五月雨突刺",
+    "abilitySetId": 1285,
+    "spCost": 20,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用长枪对随机目标\n造成4～8次伤害。"
+  },
+  "1286": {
+    "name": "属性防御破坏一击",
+    "abilitySetId": 1286,
+    "spCost": 23,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用弓对敌方单体造成大量伤害，\n并施加属防下降的效果3回合。"
+  },
+  "1288": {
+    "name": "红莲·一字",
+    "abilitySetId": 1288,
+    "spCost": 50,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用剑对敌方全体造成大量伤害，\n且造成火属性伤害。"
+  },
+  "1289": {
+    "name": "拼死一击",
+    "abilitySetId": 1289,
+    "spCost": 8,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用斧头对敌方单体造成伤害，\n极小概率使对象立即死亡。"
+  },
+  "1290": {
+    "name": "小憩一下",
+    "abilitySetId": 1290,
+    "spCost": 1,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "恢复自身的HP/SP。"
+  },
+  "1291": {
+    "name": "胧斩",
+    "abilitySetId": 1291,
+    "spCost": 29,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用剑对敌方单体造成中等伤害，\n并施加物防下降的效果2回合。"
+  },
+  "1292": {
+    "name": "融石恩宠",
+    "abilitySetId": 1292,
+    "spCost": 20,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "治疗我方单体的石化，\n并恢复其HP。"
+  },
+  "1293": {
+    "name": "剑风",
+    "abilitySetId": 1293,
+    "spCost": 35,
+    "costType": "EABILITY_COST_TYPE::eMP",
+    "description": "用剑对敌方单体造成中等伤害，\n且造成2次风属性伤害。"
+  }
+}

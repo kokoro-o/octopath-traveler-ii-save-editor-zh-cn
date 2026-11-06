@@ -1,0 +1,741 @@
+{
+  "provenance": "Manually transcribed prior investigation and its retained in-memory reference records, before running the new extractor. Not a second UE tool. Never regenerated from actual output.",
+  "pakSha256": "a0ffc52e458a36d74b7985cef02dd5c37c65e19ed69587125a429fb38b0dcee7",
+  "gameVersion": "1.1.1",
+  "keyResourceSha256": {
+    "Majesty/Content/Item/Database/ItemDB.uexp": "8976e64a02ad74a71661660aa349e877f4085df93aa607d24310757a76197d48",
+    "Majesty/Content/GameText/Database/GameTextEN.uexp": "95f6d822498cba34ef5b5e09ae5c72c44237fb947faf7bc77b4471cd280da759",
+    "Majesty/Content/GameText/Database/GameTextZH_CN.uexp": "4b605b1876fc9b38cb3f0a1e53f2801fcc2315fee6eb91e7412cf5a58cea47a1",
+    "Majesty/Content/Ability/Database/AilmentData.uexp": "f74626da547eba64990b559ceabf5c8dfb088cd533597e65e0030c39b6079662",
+    "Majesty/Content/Ability/Database/DiseaseData.uexp": "f58db15932f9ae63323b7612edc6e45c5456d94e48f72ec6b21be2982fa9b285",
+    "Majesty/Content/Ability/Database/AbilityData.uexp": "22f502b4a8751265206f32f827a077fd76abadcc7f1fd0833f6fb3fd506dacd6",
+    "Majesty/Content/Item/Database/SpecialItemDB.uexp": "bde862657d701e0e9c69323971ec0bac68b53b02a0b4d11f6f46217a0b4d8fd0"
+  },
+  "counts": {
+    "items": 956,
+    "itemDB": 1675,
+    "equipment": 526,
+    "editorEquipment": 525,
+    "nonemptyDescriptions": 606,
+    "unlisted": 719
+  },
+  "revisionOrder": [
+    "HP",
+    "MP",
+    "BP",
+    "SP",
+    "POT",
+    "ATK",
+    "DEF",
+    "MATK",
+    "MDEF",
+    "ACC",
+    "EVA",
+    "CON",
+    "AGI"
+  ],
+  "samples": [
+    {
+      "id": 1904,
+      "rowName": "ITM_CSM_0010",
+      "nameRef": "TX_NA_ITM_CSM_0010",
+      "descriptionRef": "TX_CO_ITM_CSM_0010",
+      "zhCN": "恢复HP的葡萄",
+      "en": "Healing Grape",
+      "equipment": {
+        "status": "not-applicable"
+      },
+      "effects": [
+        {
+          "AilmentName": "HP_FIXED_RECOVERY",
+          "InvocationValue": 500,
+          "InvocationTurn": 0,
+          "DiseaseRate": 0
+        }
+      ],
+      "abilityRef": "None",
+      "context": {
+        "status": "not-applicable"
+      },
+      "source": "2026-11-04 prior read-only investigation; original ItemDB + GameText + effect tables",
+      "verification": "prior-source-sample; not independent-tool-verified"
+    },
+    {
+      "id": 1905,
+      "rowName": "ITM_CSM_0020",
+      "nameRef": "TX_NA_ITM_CSM_0020",
+      "descriptionRef": "TX_CO_ITM_CSM_0020",
+      "zhCN": "恢复HP的葡萄（大）",
+      "en": "Healing Grape (M)",
+      "equipment": {
+        "status": "not-applicable"
+      },
+      "effects": [
+        {
+          "AilmentName": "HP_FIXED_RECOVERY",
+          "InvocationValue": 1250,
+          "InvocationTurn": 0,
+          "DiseaseRate": 0
+        }
+      ],
+      "abilityRef": "None",
+      "context": {
+        "status": "not-applicable"
+      },
+      "source": "2026-11-04 prior read-only investigation; original ItemDB + GameText + effect tables",
+      "verification": "prior-source-sample; not independent-tool-verified"
+    },
+    {
+      "id": 1907,
+      "rowName": "ITM_CSM_0040",
+      "nameRef": "TX_NA_ITM_CSM_0040",
+      "descriptionRef": "TX_CO_ITM_CSM_0040",
+      "zhCN": "恢复SP的李子",
+      "en": "Inspiriting Plum",
+      "equipment": {
+        "status": "not-applicable"
+      },
+      "effects": [
+        {
+          "AilmentName": "MP_FIXED_RECOVERY",
+          "InvocationValue": 40,
+          "InvocationTurn": 0,
+          "DiseaseRate": 0
+        }
+      ],
+      "abilityRef": "None",
+      "context": {
+        "status": "not-applicable"
+      },
+      "source": "2026-11-04 prior read-only investigation; original ItemDB + GameText + effect tables",
+      "verification": "prior-source-sample; not independent-tool-verified"
+    },
+    {
+      "id": 1910,
+      "rowName": "ITM_CSM_0070",
+      "nameRef": "TX_NA_ITM_CSM_0070",
+      "descriptionRef": "TX_CO_ITM_CSM_0070",
+      "zhCN": "恢复BP的石榴",
+      "en": "Energizing Pomegranate",
+      "equipment": {
+        "status": "not-applicable"
+      },
+      "effects": [
+        {
+          "AilmentName": "BP_RECOVERY",
+          "InvocationValue": 1,
+          "InvocationTurn": 0,
+          "DiseaseRate": 0
+        }
+      ],
+      "abilityRef": "None",
+      "context": {
+        "status": "not-applicable"
+      },
+      "source": "2026-11-04 prior read-only investigation; original ItemDB + GameText + effect tables",
+      "verification": "prior-source-sample; not independent-tool-verified"
+    },
+    {
+      "id": 1913,
+      "rowName": "ITM_CSM_0100",
+      "nameRef": "TX_NA_ITM_CSM_0100",
+      "descriptionRef": "TX_CO_ITM_CSM_0100",
+      "zhCN": "恢复HP/SP的果酱",
+      "en": "Refreshing Jam",
+      "equipment": {
+        "status": "not-applicable"
+      },
+      "effects": [
+        {
+          "AilmentName": "HP_RATIO_RECOVERY",
+          "InvocationValue": 100,
+          "InvocationTurn": 0,
+          "DiseaseRate": 0
+        },
+        {
+          "AilmentName": "MP_RATIO_RECOVERY",
+          "InvocationValue": 100,
+          "InvocationTurn": 0,
+          "DiseaseRate": 0
+        }
+      ],
+      "abilityRef": "None",
+      "context": {
+        "status": "not-applicable"
+      },
+      "source": "2026-11-04 prior read-only investigation; original ItemDB + GameText + effect tables",
+      "verification": "prior-source-sample; not independent-tool-verified"
+    },
+    {
+      "id": 1915,
+      "rowName": "ITM_CSM_0120",
+      "nameRef": "TX_NA_ITM_CSM_0120",
+      "descriptionRef": "TX_CO_ITM_CSM_0120",
+      "zhCN": "复活的橄榄",
+      "en": "Olive of Life",
+      "equipment": {
+        "status": "not-applicable"
+      },
+      "effects": [
+        {
+          "AilmentName": "REVIVE_FIX",
+          "InvocationValue": 500,
+          "InvocationTurn": 0,
+          "DiseaseRate": 0
+        }
+      ],
+      "abilityRef": "None",
+      "context": {
+        "status": "not-applicable"
+      },
+      "source": "2026-11-04 prior read-only investigation; original ItemDB + GameText + effect tables",
+      "verification": "prior-source-sample; not independent-tool-verified"
+    },
+    {
+      "id": 1917,
+      "rowName": "ITM_CSM_0140",
+      "nameRef": "TX_NA_ITM_CSM_0140",
+      "descriptionRef": "TX_CO_ITM_CSM_0140",
+      "zhCN": "复活的橄榄（特大）",
+      "en": "Olive of Life (L)",
+      "equipment": {
+        "status": "not-applicable"
+      },
+      "effects": [
+        {
+          "AilmentName": "REVIVE_FIX",
+          "InvocationValue": 9999,
+          "InvocationTurn": 0,
+          "DiseaseRate": 0
+        }
+      ],
+      "abilityRef": "None",
+      "context": {
+        "status": "not-applicable"
+      },
+      "source": "2026-11-04 prior read-only investigation; original ItemDB + GameText + effect tables",
+      "verification": "prior-source-sample; not independent-tool-verified"
+    },
+    {
+      "id": 1928,
+      "rowName": "ITM_CSM_0250",
+      "nameRef": "TX_NA_ITM_CSM_0250",
+      "descriptionRef": "TX_CO_ITM_CSM_0250",
+      "zhCN": "毒瓶",
+      "en": "Bottle of Poison Dust",
+      "equipment": {
+        "status": "not-applicable"
+      },
+      "effects": [
+        {
+          "AilmentName": "ADD_POISON_NORMAL",
+          "InvocationValue": 0,
+          "InvocationTurn": 3,
+          "DiseaseRate": 40
+        }
+      ],
+      "abilityRef": "None",
+      "context": {
+        "status": "not-applicable"
+      },
+      "source": "2026-11-04 prior read-only investigation; original ItemDB + GameText + effect tables",
+      "verification": "prior-source-sample; not independent-tool-verified"
+    },
+    {
+      "id": 1932,
+      "rowName": "ITM_CSM_0290",
+      "nameRef": "TX_NA_ITM_CSM_0290",
+      "descriptionRef": "TX_CO_ITM_CSM_0290",
+      "zhCN": "火之精灵石",
+      "en": "Fire Soulstone",
+      "equipment": {
+        "status": "not-applicable"
+      },
+      "effects": [
+        {
+          "AilmentName": "HP_FIXED_DAMAGE",
+          "InvocationValue": 200,
+          "InvocationTurn": 0,
+          "DiseaseRate": 0
+        }
+      ],
+      "abilityRef": "None",
+      "context": {
+        "status": "not-applicable"
+      },
+      "source": "2026-11-04 prior read-only investigation; original ItemDB + GameText + effect tables",
+      "verification": "prior-source-sample; not independent-tool-verified"
+    },
+    {
+      "id": 11080,
+      "rowName": "ITM_MEAT_1520",
+      "nameRef": "TX_NA_ITM_MEAT_1520",
+      "descriptionRef": "TX_CO_ITM_MEAT_1520",
+      "zhCN": "章鱼烧",
+      "en": "Octopath Bowl",
+      "equipment": {
+        "status": "not-applicable"
+      },
+      "effects": [],
+      "abilityRef": "ABI_OCTBALL",
+      "context": {
+        "status": "not-applicable"
+      },
+      "source": "2026-11-04 prior read-only investigation; original ItemDB + GameText + effect tables",
+      "verification": "prior-source-sample; not independent-tool-verified"
+    },
+    {
+      "id": 2069,
+      "rowName": "ITM_EQP_SWD_300",
+      "nameRef": "TX_NA_ITM_EQP_SWD_300",
+      "descriptionRef": "TX_CO_ITM_EQP_SWD_300",
+      "zhCN": "历战之剑",
+      "en": "Battle-Tested Blade",
+      "equipment": {
+        "status": "raw-verified",
+        "nonzero": {
+          "ATK": 400,
+          "CON": 120
+        },
+        "remainingFieldsAreZero": true
+      },
+      "effects": [
+        {
+          "AilmentName": "WEAPON_ABILITY_UP",
+          "InvocationValue": 130,
+          "InvocationTurn": 0,
+          "DiseaseRate": 0
+        }
+      ],
+      "abilityRef": "None",
+      "context": {
+        "status": "not-applicable"
+      },
+      "source": "2026-11-04 prior read-only investigation; original ItemDB + GameText + effect tables",
+      "verification": "prior-source-sample; not independent-tool-verified"
+    },
+    {
+      "id": 2093,
+      "rowName": "ITM_EQP_LNS_210",
+      "nameRef": "TX_NA_ITM_EQP_LNS_210",
+      "descriptionRef": "TX_CO_ITM_EQP_LNS_210",
+      "zhCN": "假寐之枪",
+      "en": "Spear of Sleep",
+      "equipment": {
+        "status": "raw-verified",
+        "nonzero": {
+          "ATK": 57,
+          "MATK": 57
+        },
+        "remainingFieldsAreZero": true
+      },
+      "effects": [
+        {
+          "AilmentName": "ADD_SLEEP_NORMAL",
+          "InvocationValue": 0,
+          "InvocationTurn": 2,
+          "DiseaseRate": 10
+        }
+      ],
+      "abilityRef": "None",
+      "context": {
+        "status": "not-applicable"
+      },
+      "source": "2026-11-04 prior read-only investigation; original ItemDB + GameText + effect tables",
+      "verification": "prior-source-sample; not independent-tool-verified"
+    },
+    {
+      "id": 2125,
+      "rowName": "ITM_EQP_DGR_200",
+      "nameRef": "TX_NA_ITM_EQP_DGR_200",
+      "descriptionRef": "TX_CO_ITM_EQP_DGR_200",
+      "zhCN": "石英匕首",
+      "en": "Quartz Dagger",
+      "equipment": {
+        "status": "raw-verified",
+        "nonzero": {
+          "ATK": 60,
+          "MATK": 58
+        },
+        "remainingFieldsAreZero": true
+      },
+      "effects": [
+        {
+          "AilmentName": "ADD_MDEF_DOWN",
+          "InvocationValue": 0,
+          "InvocationTurn": 2,
+          "DiseaseRate": 10
+        }
+      ],
+      "abilityRef": "None",
+      "context": {
+        "status": "not-applicable"
+      },
+      "source": "2026-11-04 prior read-only investigation; original ItemDB + GameText + effect tables",
+      "verification": "prior-source-sample; not independent-tool-verified"
+    },
+    {
+      "id": 2154,
+      "rowName": "ITM_EQP_AXE_170",
+      "nameRef": "TX_NA_ITM_EQP_AXE_170",
+      "descriptionRef": "TX_CO_ITM_EQP_AXE_170",
+      "zhCN": "破坏战斧",
+      "en": "Cleaver of Destruction",
+      "equipment": {
+        "status": "raw-verified",
+        "nonzero": {
+          "ATK": 304,
+          "ACC": 91
+        },
+        "remainingFieldsAreZero": true
+      },
+      "effects": [
+        {
+          "AilmentName": "ADD_DEF_DOWN",
+          "InvocationValue": 0,
+          "InvocationTurn": 2,
+          "DiseaseRate": 10
+        }
+      ],
+      "abilityRef": "None",
+      "context": {
+        "status": "not-applicable"
+      },
+      "source": "2026-11-04 prior read-only investigation; original ItemDB + GameText + effect tables",
+      "verification": "prior-source-sample; not independent-tool-verified"
+    },
+    {
+      "id": 2190,
+      "rowName": "ITM_EQP_BOW_200",
+      "nameRef": "TX_NA_ITM_EQP_BOW_200",
+      "descriptionRef": "TX_CO_ITM_EQP_BOW_200",
+      "zhCN": "猛兽之弓",
+      "en": "Raging Beast",
+      "equipment": {
+        "status": "raw-verified",
+        "nonzero": {
+          "ATK": 179,
+          "EVA": 56
+        },
+        "remainingFieldsAreZero": true
+      },
+      "effects": [
+        {
+          "AilmentName": "ADD_EVA_DOWN",
+          "InvocationValue": 0,
+          "InvocationTurn": 2,
+          "DiseaseRate": 10
+        }
+      ],
+      "abilityRef": "None",
+      "context": {
+        "status": "not-applicable"
+      },
+      "source": "2026-11-04 prior read-only investigation; original ItemDB + GameText + effect tables",
+      "verification": "prior-source-sample; not independent-tool-verified"
+    },
+    {
+      "id": 2223,
+      "rowName": "ITM_EQP_ROD_210",
+      "nameRef": "TX_NA_ITM_EQP_ROD_210",
+      "descriptionRef": "TX_CO_ITM_EQP_ROD_210",
+      "zhCN": "雷霆权杖",
+      "en": "Thunder Mace",
+      "equipment": {
+        "status": "raw-verified",
+        "nonzero": {
+          "ATK": 60,
+          "MATK": 40
+        },
+        "remainingFieldsAreZero": true
+      },
+      "effects": [
+        {
+          "AilmentName": "THUNDER_ABILITY_UP",
+          "InvocationValue": 130,
+          "InvocationTurn": 0,
+          "DiseaseRate": 0
+        }
+      ],
+      "abilityRef": "None",
+      "context": {
+        "status": "not-applicable"
+      },
+      "source": "2026-11-04 prior read-only investigation; original ItemDB + GameText + effect tables",
+      "verification": "prior-source-sample; not independent-tool-verified"
+    },
+    {
+      "id": 2253,
+      "rowName": "ITM_EQP_SLD_180",
+      "nameRef": "TX_NA_ITM_EQP_SLD_180",
+      "descriptionRef": "TX_CO_ITM_EQP_SLD_180",
+      "zhCN": "禁忌之盾",
+      "en": "Forbidden Shield",
+      "equipment": {
+        "status": "raw-verified",
+        "nonzero": {
+          "DEF": 118,
+          "MDEF": 103
+        },
+        "remainingFieldsAreZero": true
+      },
+      "effects": [
+        {
+          "AilmentName": "ENCOUNT_UP",
+          "InvocationValue": 200,
+          "InvocationTurn": 0,
+          "DiseaseRate": 0
+        }
+      ],
+      "abilityRef": "None",
+      "context": {
+        "status": "not-applicable"
+      },
+      "source": "2026-11-04 prior read-only investigation; original ItemDB + GameText + effect tables",
+      "verification": "prior-source-sample; not independent-tool-verified"
+    },
+    {
+      "id": 2271,
+      "rowName": "ITM_EQP_HLM_130",
+      "nameRef": "TX_NA_ITM_EQP_HLM_130",
+      "descriptionRef": "TX_CO_ITM_EQP_HLM_130",
+      "zhCN": "帽盔",
+      "en": "Headgear",
+      "equipment": {
+        "status": "raw-verified",
+        "nonzero": {
+          "DEF": 15,
+          "MDEF": 19,
+          "EVA": 9
+        },
+        "remainingFieldsAreZero": true
+      },
+      "effects": [],
+      "abilityRef": "None",
+      "context": {
+        "status": "not-applicable"
+      },
+      "source": "2026-11-04 prior read-only investigation; original ItemDB + GameText + effect tables",
+      "verification": "prior-source-sample; not independent-tool-verified"
+    },
+    {
+      "id": 2286,
+      "rowName": "ITM_EQP_HLM_280",
+      "nameRef": "TX_NA_ITM_EQP_HLM_280",
+      "descriptionRef": "TX_CO_ITM_EQP_HLM_280",
+      "zhCN": "冰装头盔",
+      "en": "Gelid Helm",
+      "equipment": {
+        "status": "raw-verified",
+        "nonzero": {
+          "DEF": 21,
+          "MDEF": 18
+        },
+        "remainingFieldsAreZero": true
+      },
+      "effects": [
+        {
+          "AilmentName": "ICE_RESIST",
+          "InvocationValue": 75,
+          "InvocationTurn": 0,
+          "DiseaseRate": 0
+        }
+      ],
+      "abilityRef": "None",
+      "context": {
+        "status": "not-applicable"
+      },
+      "source": "2026-11-04 prior read-only investigation; original ItemDB + GameText + effect tables",
+      "verification": "prior-source-sample; not independent-tool-verified"
+    },
+    {
+      "id": 2338,
+      "rowName": "ITM_EQP_AMR_350",
+      "nameRef": "TX_NA_ITM_EQP_AMR_350",
+      "descriptionRef": "TX_CO_ITM_EQP_AMR_350",
+      "zhCN": "风之装束",
+      "en": "Wind Robe",
+      "equipment": {
+        "status": "raw-verified",
+        "nonzero": {
+          "DEF": 33,
+          "MDEF": 36
+        },
+        "remainingFieldsAreZero": true
+      },
+      "effects": [
+        {
+          "AilmentName": "WIND_RESIST",
+          "InvocationValue": 75,
+          "InvocationTurn": 0,
+          "DiseaseRate": 0
+        }
+      ],
+      "abilityRef": "None",
+      "context": {
+        "status": "not-applicable"
+      },
+      "source": "2026-11-04 prior read-only investigation; original ItemDB + GameText + effect tables",
+      "verification": "prior-source-sample; not independent-tool-verified"
+    },
+    {
+      "id": 2359,
+      "rowName": "ITM_EQP_ACS_011",
+      "nameRef": "TX_NA_ITM_EQP_ACS_011",
+      "descriptionRef": "TX_CO_ITM_EQP_ACS_011",
+      "zhCN": "龙之领巾",
+      "en": "Dragon's Scarf",
+      "equipment": {
+        "status": "raw-verified",
+        "nonzero": {},
+        "remainingFieldsAreZero": true
+      },
+      "effects": [
+        {
+          "AilmentName": "ADD_MP_FIXED_REGENERATION",
+          "InvocationValue": 6,
+          "InvocationTurn": -1,
+          "DiseaseRate": 0
+        }
+      ],
+      "abilityRef": "None",
+      "context": {
+        "status": "not-applicable"
+      },
+      "source": "2026-11-04 prior read-only investigation; original ItemDB + GameText + effect tables",
+      "verification": "prior-source-sample; not independent-tool-verified"
+    },
+    {
+      "id": 10569,
+      "rowName": "ITM_MRL_REV_0010",
+      "nameRef": "TX_NA_ITM_MRL_REV_0010",
+      "descriptionRef": "TX_CO_ITM_MRL_REV_0010",
+      "zhCN": "葡萄叶",
+      "en": "Grape Leaf",
+      "equipment": {
+        "status": "not-applicable"
+      },
+      "effects": [],
+      "abilityRef": "None",
+      "context": {
+        "status": "raw-verified",
+        "row": "PRE_RECOVERY_010",
+        "ordinary": 450,
+        "enhanced": 2000
+      },
+      "source": "2026-11-04 prior read-only investigation; original ItemDB + GameText + effect tables",
+      "verification": "prior-source-sample; not independent-tool-verified"
+    },
+    {
+      "id": 302,
+      "rowName": "ITM_TRE_SIN_10_0030",
+      "nameRef": "TX_NA_ITM_TRE_SIN_10_1300_BIBLE",
+      "descriptionRef": "TX_CO_ITM_TRE_SIN_10_1300_BIBLE",
+      "zhCN": "圣典",
+      "en": "Book of Scripture",
+      "equipment": {
+        "status": "not-applicable"
+      },
+      "effects": [],
+      "abilityRef": "None",
+      "context": {
+        "status": "not-applicable"
+      },
+      "source": "2026-11-04 prior read-only investigation; original ItemDB + GameText + effect tables",
+      "verification": "prior-source-sample; not independent-tool-verified"
+    },
+    {
+      "id": 10596,
+      "rowName": "ITM_INF_KEN_10_0100",
+      "nameRef": "TX_NA_INFO_Twn_Dst_3_1_A_04",
+      "descriptionRef": "TX_CO_INFO_Twn_Dst_3_1_A_04",
+      "zhCN": "王宫认证的商人提供的情报",
+      "en": "Castle Merchant's Information",
+      "equipment": {
+        "status": "not-applicable"
+      },
+      "effects": [],
+      "abilityRef": "None",
+      "context": {
+        "status": "not-applicable"
+      },
+      "source": "2026-11-04 prior read-only investigation; original ItemDB + GameText + effect tables",
+      "verification": "prior-source-sample; not independent-tool-verified"
+    }
+  ],
+  "ambiguities": [
+    {
+      "id": 2271,
+      "nameRef": "TX_NA_ITM_EQP_HLM_130",
+      "oldTextKey": "eSHOP_CATEGORY_HELMET_Text"
+    },
+    {
+      "id": 10460,
+      "nameRef": "TX_NA_ITM_TRE_SIN_3B_0010",
+      "oldTextKey": "TX_NA_ITM_EQP_ACS_970_Text"
+    },
+    {
+      "id": 10578,
+      "nameRef": "TX_NA_ITM_MRL_REV_0100",
+      "oldTextKey": "TX_NA_ITM_MRL_ATK_0100_Text"
+    },
+    {
+      "id": 10830,
+      "nameRef": "TX_NA_ITM_TRE_KAR_2B_0010",
+      "oldTextKey": "TX_NA_ITM_MEAT_1530_Text"
+    },
+    {
+      "id": 10976,
+      "nameRef": "TX_NA_ITM_TRE_SS_TD21_0100_0010",
+      "oldTextKey": "TX_NA_ITM_EQP_SWD_240_Text"
+    },
+    {
+      "id": 11037,
+      "nameRef": "TX_NA_ITM_TRE_KUS_50_0020",
+      "oldTextKey": "TX_NA_ITM_TRE_KUS_2B_0010_Text"
+    },
+    {
+      "id": 11071,
+      "nameRef": "TX_NA_ITM_MEAT_1430",
+      "oldTextKey": "TX_NA_ITM_FLV_0150_Text"
+    },
+    {
+      "id": 11088,
+      "nameRef": "TX_NA_ITM_FLV_0570",
+      "oldTextKey": "TX_NA_ITM_FLV_0490_Text"
+    },
+    {
+      "id": 11100,
+      "nameRef": "TX_NA_ITM_FLV_0690",
+      "oldTextKey": "TX_NA_ITM_EQP_DGR_400_Text"
+    }
+  ],
+  "classificationDifference": {
+    "id": 11159,
+    "rowName": "ITM_EQP_ACS_970",
+    "editorCategory": 12,
+    "gameCategory": "EItemCategoryData::eEQUIPMENT",
+    "equipmentCategory": "EEquipmentCategory::eACCESSORY",
+    "nonzero": {
+      "ACC": 15,
+      "EVA": 15
+    }
+  },
+  "textCases": {
+    "sharedDescription": {
+      "ids": [
+        10504,
+        10505
+      ],
+      "ref": "TX_CO_ITM_TRE_REC_0000"
+    },
+    "emptyDescription": {
+      "id": 2271,
+      "ref": "TX_CO_ITM_EQP_HLM_130"
+    },
+    "noneDescription": {
+      "id": 10498,
+      "ref": "None"
+    }
+  }
+}

@@ -1,0 +1,449 @@
+export type Color = [number, number, number, number];
+
+export type ColorType =
+  | "ABGR555"
+  | "ARGB555"
+  | "ARGB8888"
+  | "BGR333"
+  | "BGR555"
+  | "RGB555"
+  | "RGB565"
+  | "RGB5A3"
+  | "RGBA555";
+
+export type ContentType =
+  | "bitflags"
+  | "checksum"
+  | "component"
+  | "container"
+  | "group"
+  | "section"
+  | "tabs"
+  | "variable";
+
+export type DataType =
+  | "bit"
+  | "boolean"
+  | "lower4"
+  | "upper4"
+  | "string"
+  | "int64"
+  | "uint64"
+  | "float32"
+  | DataTypeInt
+  | DataTypeUInt;
+
+export type DataTypeInt = "int8" | "int16" | "int24" | "int32";
+export type DataTypeUInt = "uint8" | "uint16" | "uint24" | "uint32";
+
+export type DebugOptions = {
+  [key: string]: boolean;
+};
+
+export type fileVisualizerOptions = {
+  [key: string]: boolean;
+};
+
+export type IntOperation = { [operand: string]: number | IntOperationConvert };
+
+export type IntOperationConvert = { from: TimeUnit; to: TimeUnit };
+
+export type Item =
+  | ItemBitflags
+  | ItemBoolean
+  | ItemChecksum
+  | ItemComponent
+  | ItemContainer
+  | ItemGroup
+  | ItemInt
+  | ItemMessage
+  | ItemSection
+  | ItemString
+  | ItemTabs;
+
+export type ObjectKeyValue<T> = { key: string; value: T };
+
+export type Palette = Color[];
+
+export type ParentItem = ItemGroup | ItemSection | ItemTab | ItemTabs;
+
+export type RegionValidator = Validator | LogicalOperator<Validator>;
+
+export type Resource = { [key: number]: string };
+
+export type Resources = {
+  [key: string]: Resource | Resource[] | string;
+};
+
+export type ResourceGroups = { name: string; options: number[] }[];
+
+export type ResourceLabels = { [key: number]: string };
+
+export type StringEncoding =
+  | "nintendo64Mpk"
+  | "shiftJis"
+  | "windows31J"
+  | "windows1252";
+
+export type TimeUnit =
+  | "milliseconds"
+  | "seconds"
+  | "minutes"
+  | "hours"
+  | "day"
+  | "month"
+  | "year";
+
+export type Validator = { [key: number]: number[] };
+
+export interface Binary {
+  bitStart: number;
+  bitLength: number;
+}
+
+export interface DataViewAltMetas {
+  isDirty?: boolean;
+  patch?: { [offset: number]: bigint | number };
+  [key: string]: any;
+}
+
+export interface Game {
+  id: string;
+  name: string;
+  metaName: string;
+  platforms: {
+    id: string;
+    name: string;
+  }[];
+  createdAt: string;
+  tools: {
+    saveEditor?: GameTool;
+    romEditor?: GameTool;
+    randomizer?: GameTool;
+  };
+}
+
+export interface GameTool {
+  compatibilities?: string[];
+  regions: string[];
+}
+
+export interface Manufacturer {
+  id: string;
+  name: string;
+}
+
+export interface Platform {
+  id: string;
+  name: string;
+  manufacturer: Manufacturer;
+}
+
+export interface GameJson {
+  validator: {
+    fileNames?: (RegExp | string)[];
+    platforms: { [platform: string]: GameRegion };
+    text: string;
+    hint?: string;
+    error: string;
+  };
+  localization?: {
+    regions: string[];
+    languages: string[];
+  };
+  checksums?: ItemChecksum[];
+  items: Item[];
+  resources?: Resources;
+  resourcesGroups?: {
+    [key: string]: ResourceGroups | string;
+  };
+  resourcesLabels?: {
+    [key: string]: ResourceLabels;
+  };
+  resourcesOrder?: {
+    [key: string]: number[];
+  };
+}
+
+export interface GameRegion {
+  [region: string]: RegionValidator | boolean;
+}
+
+export interface ItemBitflag {
+  offset: number;
+  bit: number;
+  label: string;
+  reversed?: boolean;
+  separator?: boolean;
+  disabled?: boolean;
+  hidden?: boolean;
+}
+
+export interface ItemBitflagChecked extends ItemBitflag {
+  checked: boolean;
+}
+
+export interface ItemBitflags {
+  id?: string;
+  name?: string;
+  dataViewAltKey?: string;
+  jsonPath?: string;
+  type: "bitflags";
+  jsonType?: "boolean" | "boolean[]" | "number" | "number[]";
+  overrideShift?: {
+    parent: number;
+    shift: number;
+  };
+  fixedWidth?: boolean;
+  maxWidth?: boolean;
+  noMargin?: boolean;
+  reversed?: boolean;
+  hint?: string;
+  readonly?: boolean;
+  disabled?: boolean;
+  hidden?: boolean;
+  flags: ItemBitflag[];
+  parent?: ParentItem;
+}
+
+export interface ItemBoolean {
+  id?: string;
+  name?: string;
+  dataViewAltKey?: string;
+  offset: number;
+  jsonPath?: string;
+  type: "variable";
+  dataType: "boolean";
+  on?: number;
+  off?: number;
+  resource?: string;
+  overrideShift?: {
+    parent: number;
+    shift: number;
+  };
+  separator?: boolean;
+  disabled?: boolean;
+  hidden?: boolean;
+  parent?: ParentItem;
+}
+
+export interface ItemChecksum {
+  id?: string;
+  name?: string;
+  dataViewAltKey?: string;
+  offset: number;
+  type: "checksum";
+  dataType: DataTypeUInt | "uint64";
+  bigEndian?: boolean;
+  control: {
+    offsetStart: number;
+    offsetEnd: number;
+  };
+  order?: number;
+  overrideShift?: {
+    parent: number;
+    shift: number;
+  };
+  disabled?: boolean;
+  parent?: ParentItem;
+}
+
+export interface ItemComponent {
+  type: "component";
+  component: string;
+  props?: { [key: string]: any };
+  parent?: ParentItem;
+}
+
+export interface ItemContainer {
+  id?: string;
+  instanceId?: string;
+  pointer?: number | number[];
+  pointerDataViewAltKey?: string;
+  pointerDataType?: DataTypeUInt;
+  length: number;
+  type: "container";
+  instanceType: "section" | "tabs";
+  instances: number;
+  enumeration?: string;
+  resource?: string;
+  resourceOrder?: boolean;
+  defaultIndex?: number;
+  vertical?: boolean;
+  fixedWidth?: boolean;
+  onTabChange?: string;
+  flex?: boolean;
+  noMargin?: boolean;
+  hidden?: boolean;
+  disableSubinstanceIf?:
+    | ItemIntCondition
+    | LogicalOperator<ItemIntCondition>
+    | string;
+  prependSubinstance?: ItemTab[];
+  items: Item[];
+  appendSubinstance?: ItemTab[];
+  parent?: ParentItem;
+}
+
+export interface ItemContent {
+  hidden?: boolean;
+  items: Item[];
+}
+
+export interface ItemGroup {
+  id?: string;
+  name?: string;
+  type: "group";
+  mode?: "chrono" | "date" | "fraction" | "time";
+  linked?: boolean;
+  hint?: string;
+  hidden?: boolean;
+  items: ItemInt[];
+  parent?: ParentItem;
+}
+
+export interface ItemInt {
+  id?: string;
+  name?: string;
+  dataViewAltKey?: string;
+  offset: number;
+  jsonPath?: string;
+  type: "variable";
+  dataType: Exclude<DataType, "boolean" | "string">;
+  bigEndian?: boolean;
+  binary?: Binary;
+  binaryCodedDecimal?: boolean;
+  hex?: boolean;
+  bit?: number;
+  leadingZeros?: number;
+  operations?: IntOperation[];
+  min?: number;
+  max?: number;
+  step?: number;
+  resource?: string;
+  overrideShift?: {
+    parent: number;
+    shift: number;
+  };
+  size?: "md" | "lg" | "xl";
+  fixedWidth?: boolean;
+  autocomplete?: boolean;
+  button?: {
+    label: string;
+    action: string;
+  };
+  uncontrolled?: boolean;
+  prefix?: string;
+  suffix?: string;
+  hint?: string;
+  disabled?: boolean;
+  hidden?: boolean;
+  test?: boolean;
+  parent?: ParentItem;
+}
+
+export interface ItemIntCondition {
+  dataViewAltKey?: string;
+  offset: number;
+  type: "variable";
+  dataType: Exclude<DataType, "boolean" | "string">;
+  bigEndian?: boolean;
+  binary?: Binary;
+  bit?: number;
+  operator: "=" | "!=" | ">" | ">=" | "<" | "<=";
+  value: number;
+}
+
+export interface ItemMessage {
+  id?: string;
+  type: "message";
+  mode: "info" | "warning";
+  message: string;
+  hidden?: boolean;
+  parent?: ParentItem;
+}
+
+export interface ItemSection {
+  id?: string;
+  name?: string;
+  type: "section";
+  background?: boolean;
+  flex?: boolean;
+  flex1?: boolean;
+  flexStart?: boolean;
+  noMargin?: boolean;
+  hidden?: boolean;
+  items: Item[];
+  parent?: ParentItem;
+}
+
+export interface ItemString {
+  id?: string;
+  name?: string;
+  dataViewAltKey?: string;
+  offset: number;
+  jsonPath?: string;
+  length: number;
+  type: "variable";
+  dataType: "string";
+  bigEndian?: boolean;
+  letterDataType: DataTypeUInt;
+  letterBigEndian?: boolean;
+  letterIsAdaptive?: boolean;
+  fallback?: number;
+  encoding?: StringEncoding;
+  endCode?: number;
+  regex?: string;
+  resource?: string;
+  overrideShift?: {
+    parent: number;
+    shift: number;
+  };
+  size?: "md" | "lg" | "xl";
+  hint?: string;
+  disabled?: boolean;
+  hidden?: boolean;
+  test?: boolean;
+  parent?: ParentItem;
+}
+
+export interface ItemTab {
+  id?: string;
+  name?: string;
+  flex?: boolean;
+  disableTabIf?: ItemIntCondition | LogicalOperator<ItemIntCondition> | string;
+  disabled?: boolean;
+  hidden?: boolean;
+  planned?: boolean;
+  items: Item[];
+  parent?: ParentItem;
+}
+
+export interface ItemTabs {
+  id?: string;
+  type: "tabs";
+  enumeration?: string;
+  resource?: string;
+  resourceOrder?: boolean;
+  defaultIndex?: number;
+  indexes?: boolean;
+  vertical?: boolean;
+  fixedWidth?: boolean;
+  onTabChange?: string;
+  hidden?: boolean;
+  items: ItemTab[];
+  parent?: ParentItem;
+}
+
+export interface LogicalOperator<T> {
+  $and?: (LogicalOperator<T> | T)[];
+  $or?: (LogicalOperator<T> | T)[];
+}
+
+export interface Patch<T> {
+  identifier: string;
+  platform: string;
+  version: string;
+  regions?: string[];
+  data: T;
+}

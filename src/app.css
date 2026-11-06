@@ -1,0 +1,117 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 400;
+  src: url("/fonts/Roboto-Light.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 700;
+  src: url("/fonts/Roboto-Bold.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 900;
+  src: url("/fonts/Roboto-Black.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Source Code Pro";
+  font-style: normal;
+  font-weight: 400;
+  src: url("/fonts/SourceCodePro-Light.ttf") format("truetype");
+}
+
+* {
+  font-family: "Roboto";
+  outline: transparent;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+body {
+  @apply bg-primary-800 text-primary-300;
+}
+
+canvas {
+  image-rendering: pixelated;
+}
+
+button {
+  @apply rounded bg-primary-700 px-4 py-2 text-sm text-primary-300;
+
+  &:hover {
+    @apply bg-primary-300 text-white;
+  }
+}
+
+h1 {
+  @apply mb-4 text-2xl font-black;
+}
+
+h2 {
+  @apply mb-4 font-bold;
+}
+
+img {
+  @apply inline-block;
+}
+
+input:not([type="checkbox"]),
+select {
+  @apply h-8 text-primary-900;
+
+  width: 180px;
+}
+
+input {
+  @apply px-2 py-1 text-sm;
+}
+
+select {
+  @apply p-1 text-sm;
+}
+
+[data-title] {
+  @apply relative;
+}
+
+[data-title]:hover:after {
+  @apply visible opacity-100;
+
+  transition: all 0.1s ease 0.5s;
+}
+
+[data-title]:after {
+  @apply invisible absolute top-8 z-50 w-64 -translate-x-1/2 whitespace-pre-line rounded bg-primary-500 px-2 py-1 text-left text-xs opacity-0 shadow-md;
+
+  content: attr(data-title);
+}
+
+::-webkit-scrollbar {
+  @apply h-2 w-2 rounded bg-primary-800;
+}
+
+::-webkit-scrollbar-corner {
+  @apply rounded bg-primary-800;
+}
+
+::-webkit-scrollbar-track {
+  @apply rounded bg-primary-800;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply rounded bg-primary-700;
+
+  &:hover {
+    @apply bg-primary-400;
+  }
+}

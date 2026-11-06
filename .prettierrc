@@ -1,0 +1,27 @@
+{
+  "importOrder": [
+    "^@|^[a-z]",
+    "",
+    "^\\$app.*$",
+    "^\\$lib/(?!types).*$",
+    "",
+    "^\\$lib/types$",
+    "",
+    "^[./]",
+    "",
+    "(.*)"
+  ],
+  "overrides": [
+    {
+      "files": "*.svelte",
+      "options": {
+        "parser": "svelte"
+      }
+    }
+  ],
+  "plugins": [
+    "@ianvs/prettier-plugin-sort-imports",
+    "prettier-plugin-svelte",
+    "prettier-plugin-tailwindcss"
+  ]
+}
