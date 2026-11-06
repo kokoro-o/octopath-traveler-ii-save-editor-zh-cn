@@ -1,3 +1,5 @@
+> 以下为迁移前保留的功能设计与历史验证记录；部分本机专用集成/浏览器测试配置不随仓库发布。当前通用验证入口见 README 的 `npm run test:unit` 与 `npm run check`。
+
 # Octopath Traveler II — stage A offline extraction
 
 Stage A only. No application code, existing translations, inventory definitions,

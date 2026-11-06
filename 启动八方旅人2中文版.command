@@ -3,8 +3,8 @@ set -eu
 cd "${0:A:h}"
 mkdir -p .local/logs
 
-url='http://127.0.0.1:18782/octopath-traveler-ii/save-editor'
-label='local.game-tools-collection.octopath-ii'
+url='http://127.0.0.1:18783/octopath-traveler-ii/save-editor'
+label='local.octopath-traveler-ii-save-editor-zh-cn'
 node_bin="$(command -v node || true)"
 if [[ -z "$node_bin" ]]; then
   candidates=( "$HOME"/.nvm/versions/node/*/bin/node(N) /opt/homebrew/bin/node(N) )
@@ -20,7 +20,7 @@ if [[ ! -d node_modules ]]; then npm ci --no-audit --no-fund; fi
 if [[ ! -f build/index.html || -s .local/last-build-base ]]; then BASE_PATH='' npm run build; fi
 
 if [[ "${1:-}" == '--serve' ]]; then
-  exec "$node_bin" node_modules/vite/bin/vite.js preview --host 127.0.0.1 --port 18782 --strictPort
+  exec "$node_bin" node_modules/vite/bin/vite.js preview --host 127.0.0.1 --port 18783 --strictPort
 fi
 
 if curl --max-time 2 -fsS "$url" -o /dev/null 2>/dev/null; then
@@ -29,8 +29,8 @@ if curl --max-time 2 -fsS "$url" -o /dev/null 2>/dev/null; then
   exit 0
 fi
 
-if /usr/sbin/lsof -nP -iTCP:18782 -sTCP:LISTEN >/dev/null 2>&1; then
-  print '端口 18782 已被其他程序使用。请关闭占用程序后重试。'
+if /usr/sbin/lsof -nP -iTCP:18783 -sTCP:LISTEN >/dev/null 2>&1; then
+  print '端口 18783 已被其他程序使用。请关闭占用程序后重试。'
   exit 1
 fi
 

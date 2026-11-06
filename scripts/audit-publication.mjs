@@ -1,10 +1,12 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 
-// The fork already contains these upstream public fixtures. Never allow a new
-// or modified personal save under that exception, including staged changes.
-const upstream = '15d71340c3f1717745139c2e0774510cd37dfbdd';
+// Exact bytes of the original upstream public Steam fixture, not a personal save.
+const publicFixtures = new Map([
+  ['tests/saves/octopath-traveler-ii/steam/SaveData0.sav', 'b9d594c4275bb53ab2196d5f6875a2bcaedeb8147b3c8cd34f28692ba271c83e'],
+]);
 const git = args => execFileSync('git', args, { maxBuffer: 32 * 1024 * 1024 });
 const staged = process.argv.includes('--staged');
 const tracked = new Map(git(['ls-files', '--stage', '-z']).toString().split('\0').filter(Boolean).map(row => {
@@ -13,18 +15,14 @@ const tracked = new Map(git(['ls-files', '--stage', '-z']).toString().split('\0'
   if (stage !== '0') throw new Error('Resolve merge conflicts before publication.');
   return [file, { mode, hash }];
 }));
-const publicFixtures = new Map(git(['ls-tree', '-r', '-z', upstream, '--', 'tests/saves/']).toString().split('\0').filter(Boolean).map(row => {
-  const [meta, file] = row.split('\t');
-  return [file, meta.split(' ')[2]];
-}));
 const files = [...new Set(git(['ls-files', '--cached', ...(staged ? [] : ['--others', '--exclude-standard']), '-z']).toString().split('\0').filter(Boolean))].sort();
-const changedFixtures = new Set(staged ? [] : git(['diff', '--name-only', '-z', '--', 'tests/saves/']).toString().split('\0').filter(Boolean));
 const errors = [], manifest = [];
 let fixtureCount = 0;
 for (const file of files) {
   if (!staged && !fs.existsSync(file)) continue;
   if (publicFixtures.has(file)) {
-    if (tracked.get(file)?.hash !== publicFixtures.get(file) || changedFixtures.has(file)) errors.push(`${file}: upstream save fixture changed`);
+    const bytes = staged ? git(['show', `:${file}`]) : fs.readFileSync(file);
+    if (createHash('sha256').update(bytes).digest('hex') !== publicFixtures.get(file)) errors.push(`${file}: upstream save fixture changed`);
     fixtureCount++;
     manifest.push(file);
     continue;

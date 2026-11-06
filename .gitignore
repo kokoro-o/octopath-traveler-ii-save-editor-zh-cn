@@ -18,10 +18,8 @@ vite.config.ts.timestamp-*
 # Local game text extraction, personal saves, QA exports, and runtime logs
 /.local/
 
-# Personal save files and game packages (existing upstream fixtures stay tracked).
+# Personal saves and game packages; only the original public Steam fixture is allowed.
 /qa-input/
-/tests/saves/
-!/tests/saves/
 /tests/saves/*
 !/tests/saves/octopath-traveler-ii/
 /tests/saves/octopath-traveler-ii/*

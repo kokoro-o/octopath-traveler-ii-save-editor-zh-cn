@@ -1,3 +1,5 @@
+> 以下为迁移前保留的功能设计与历史验证记录；部分本机专用集成/浏览器测试配置不随仓库发布。当前通用验证入口见 README 的 `npm run test:unit` 与 `npm run check`。
+
 # OT2 save editor dictionaries — stage one
 
 This stage adds offline parsing and static dictionaries only. It does not edit

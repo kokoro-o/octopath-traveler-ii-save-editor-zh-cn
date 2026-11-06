@@ -1,23 +1,7 @@
 [
   {
-    "id": "microsoft",
-    "name": "Microsoft"
-  },
-  {
-    "id": "nec",
-    "name": "NEC"
-  },
-  {
     "id": "nintendo",
     "name": "Nintendo"
-  },
-  {
-    "id": "sega",
-    "name": "Sega"
-  },
-  {
-    "id": "sony",
-    "name": "Sony"
   },
   {
     "id": "valve",

@@ -183,7 +183,7 @@ test('drag session accepts same-list moves and rejects cross-list, external and 
 });
 
 for (const file of ['.local/test-saves/MJSaveData2', 'tests/saves/octopath-traveler-ii/steam/SaveData0.sav']) {
-  test(`${file}: no-edit and full feature changes survive complete GVAS roundtrips`, () => {
+  test(`${file}: no-edit and full feature changes survive complete GVAS roundtrips`, { skip: file.startsWith('.local/') && !fs.existsSync(file) ? 'Optional private Switch fixture is not installed' : false }, () => {
     const bytes = fs.readFileSync(file), hash = crypto.createHash('sha256').update(bytes).digest('hex');
     const g = new Gvas(new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength)), original = g.parseToJson();
     const parse = buffer => new Gvas(new DataView(buffer)).parseToJson();

@@ -2,7 +2,7 @@ name: Deploy static editor to GitHub Pages
 
 on:
   push:
-    branches: [master, main]
+    branches: [standalone]
   workflow_dispatch:
 
 permissions:
@@ -12,16 +12,17 @@ concurrency:
   group: github-pages
   cancel-in-progress: false
 
+env:
+  BASE_PATH: /${{ github.event.repository.name }}
+  SITE_ORIGIN: https://${{ github.repository_owner }}.github.io
+
 jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      pages: read
     steps:
       - uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
       - uses: actions/setup-node@v6
         with:
           node-version: '24'
@@ -32,23 +33,19 @@ jobs:
         run: npm ci --no-audit --no-fund
       - name: Type check
         run: npm run check
-      - name: Read Pages URL and repository base path
-        id: pages
-        uses: actions/configure-pages@v5
+      - name: Check Octopath II data and save roundtrips
+        run: npm run test:unit
       - name: Build static files
         run: npm run build
-        env:
-          BASE_PATH: ${{ steps.pages.outputs.base_path }}
-          SITE_ORIGIN: ${{ steps.pages.outputs.origin }}
       - name: Verify static entry points
         run: npm run check:static
-        env:
-          BASE_PATH: ${{ steps.pages.outputs.base_path }}
       - uses: actions/upload-pages-artifact@v4
         with:
           path: build
 
   deploy:
+    # This account currently requires a public repository to enable Pages.
+    if: ${{ !github.event.repository.private }}
     needs: build
     runs-on: ubuntu-latest
     permissions:
@@ -58,6 +55,8 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
       - name: Publish website
         id: deployment
         uses: actions/deploy-pages@v4

@@ -1,7 +1,7 @@
 #!/bin/zsh
 set -eu
 cd "${0:A:h}"
-label='local.game-tools-collection.octopath-ii'
+label='local.octopath-traveler-ii-save-editor-zh-cn'
 if job="$(launchctl list "$label" 2>/dev/null)"; then
   if [[ "$job" == *"$PWD/启动八方旅人2中文版.command"* ]]; then
     launchctl remove "$label"
@@ -17,7 +17,7 @@ if [[ -f .local/server.pid ]]; then
   rm -f .local/server.pid
 fi
 for attempt in {1..20}; do
-  if ! /usr/sbin/lsof -nP -iTCP:18782 -sTCP:LISTEN >/dev/null 2>&1; then break; fi
+  if ! /usr/sbin/lsof -nP -iTCP:18783 -sTCP:LISTEN >/dev/null 2>&1; then break; fi
   sleep 0.1
 done
 print '本地中文版服务已停止。'
